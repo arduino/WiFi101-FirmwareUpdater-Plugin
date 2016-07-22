@@ -1,0 +1,26 @@
+sudo: false
+
+language: java
+
+os:
+  - linux
+
+addons:
+  apt:
+    packages:
+    - ant
+
+jdk:
+  - oraclejdk8
+
+script:
+  - export SRC=$PWD
+  - export TAG=1.6.9
+  - wget https://github.com/arduino/Arduino/archive/$TAG.zip
+  - unzip $TAG.zip
+  - pushd Arduino-$TAG/build
+  - echo "" | ant build
+  - popd
+  - export IDE_FOLDER=Arduino-$TAG/build/linux/work
+  - ./build.sh
+

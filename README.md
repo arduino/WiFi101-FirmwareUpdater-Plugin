@@ -17,6 +17,8 @@ Arduino/Genuino MKR1000 board).
 
 ## Screenshots
 
+![Screenshot](screenshot-0.png)
+
 ![Screenshot](screenshot-1.png)
 
 ![Screenshot](screenshot-2.png)

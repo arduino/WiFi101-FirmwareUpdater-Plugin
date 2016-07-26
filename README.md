@@ -1,7 +1,7 @@
 # WiFi101 Firmware Updater Tool for Arduino IDE [![Build Status](https://travis-ci.org/arduino-libraries/WiFi101-FirmwareUpdater-Plugin.svg?branch=master)](https://travis-ci.org/arduino-libraries/WiFi101-FirmwareUpdater-Plugin)
 
 This plugin is a GUI to update Firmware or SSL Certificates on shield or boards based
-on the Atmel WINC1500 WiFi chipset (for example the Arduino/Genuino WiFi 101 Shield or the
+on the Atmel WINC1500 WiFi chipset (for example the Arduino WiFi 101 Shield or the
 Arduino/Genuino MKR1000 board).
 
 ## Installation

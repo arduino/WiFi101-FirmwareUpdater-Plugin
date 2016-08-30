@@ -2,7 +2,7 @@
 
 This plugin is a GUI to update Firmware or SSL Certificates on shield or boards based
 on the Atmel WINC1500 WiFi chipset (for example the Arduino WiFi 101 Shield or the
-Arduino/Genuino MKR1000 board).
+Arduino/Genuino MKR1000 board). This plugin is bundled with the IDE starting from v.1.6.10
 
 ## Installation
 
@@ -13,7 +13,7 @@ Arduino/Genuino MKR1000 board).
 
 ## Usage
 
-- TDB
+- Follow instructions [on this page](https://www.arduino.cc/en/Tutorial/FirmwareUpdater).
 
 ## Screenshots
 

@@ -82,7 +82,7 @@ public class SSLCertDownloader {
 		connection.setSSLSocketFactory(ssl.getSocketFactory());
 
 		Certificate[] certificates = null;
-		if (connection.getResponseCode() == 200) {
+		if (connection.getResponseCode() > 0) {
 			certificates = connection.getServerCertificates();
 		}
 

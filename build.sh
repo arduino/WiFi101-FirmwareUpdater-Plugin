@@ -80,5 +80,7 @@ zip -r dist/$ZIP_FILENAME.zip WiFi101/
 rm -r WiFi101
 
 # Install in current IDE
-unzip dist/$ZIP_FILENAME.zip -d $IDE_FOLDER/tools
-
+case "$OSTYPE" in
+	darwin*)  unzip -o dist/$ZIP_FILENAME.zip -d $IDE_FOLDER/Java/tools ;; 
+	*)        unzip -o dist/$ZIP_FILENAME.zip -d $IDE_FOLDER/tools ;;
+esac

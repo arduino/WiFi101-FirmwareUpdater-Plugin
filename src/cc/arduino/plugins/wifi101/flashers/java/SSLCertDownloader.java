@@ -80,11 +80,9 @@ public class SSLCertDownloader {
 		connection.setHostnameVerifier((str, sess) -> true);
 
 		connection.setSSLSocketFactory(ssl.getSocketFactory());
+		connection.getResponseCode();
 
-		Certificate[] certificates = null;
-		if (connection.getResponseCode() > 0) {
-			certificates = connection.getServerCertificates();
-		}
+		Certificate[] certificates = connection.getServerCertificates();
 
 		connection.disconnect();
 		return certificates;

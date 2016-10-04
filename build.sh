@@ -44,7 +44,10 @@ fi
 # Check needed libraries
 CLASSPATH="src"
 for JAR in $REQUIRED_JARS; do
-	JARFILE="$IDE_FOLDER/lib/$JAR"
+	case "$OSTYPE" in
+		darwin*)  JARFILE="$IDE_FOLDER/Java/$JAR" ;; 
+		*)        JARFILE="$IDE_FOLDER/lib/$JAR" ;;
+	esac
 	if [[ -z "$JARFILE" ]]; then
 		echo "Could not find $JARFILE library in you IDE folder."
 		exit 1

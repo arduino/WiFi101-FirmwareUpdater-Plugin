@@ -47,14 +47,15 @@ public class SSLCertDownloader {
 
 	// public static void main(String[] args) throws Exception {
 	// Certificate[] certificates = retrieveFromURL(new
-	// URL("https://www.bug.st/"));
-	// X509Certificate x509 = (X509Certificate) certificates[certificates.length -
-	// 1];
+	// URL("https://cloud.arduino.cc/"));
+	// System.out.println("Fetched " + certificates.length + " certificates. ");
+	// X509Certificate x509 = (X509Certificate) certificates[certificates.length
+	// - 1];
 	// WiFi101Certificate wiFi101Certificate = new WiFi101Certificate(x509);
 	// }
 
 	public static Certificate[] retrieveFromURL(URL url) throws NoSuchAlgorithmException, KeyManagementException,
-	    SSLPeerUnverifiedException, CertificateEncodingException, FileNotFoundException, IOException {
+			SSLPeerUnverifiedException, CertificateEncodingException, FileNotFoundException, IOException {
 
 		SSLContext ssl = SSLContext.getInstance("TLS");
 		ssl.init(null, new TrustManager[] { new X509TrustManager() {
@@ -75,15 +76,32 @@ public class SSLCertDownloader {
 			}
 		} }, null);
 
+		// This is a workaround to reduce the impact of this bug:
+		// http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8159569
+		try {
+			return retireveWithVerification(url, ssl);
+		} catch (Exception e) {
+			return retireveWithoutVerification(url, ssl);
+		}
+	}
+
+	public static Certificate[] retireveWithVerification(URL url, SSLContext ssl)
+			throws IOException, SSLPeerUnverifiedException {
 		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-
-		connection.setHostnameVerifier((str, sess) -> true);
-
 		connection.setSSLSocketFactory(ssl.getSocketFactory());
 		connection.getResponseCode();
-
 		Certificate[] certificates = connection.getServerCertificates();
+		connection.disconnect();
+		return certificates;
+	}
 
+	public static Certificate[] retireveWithoutVerification(URL url, SSLContext ssl)
+			throws IOException, SSLPeerUnverifiedException {
+		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+		connection.setHostnameVerifier((str, sess) -> true);
+		connection.setSSLSocketFactory(ssl.getSocketFactory());
+		connection.getResponseCode();
+		Certificate[] certificates = connection.getServerCertificates();
 		connection.disconnect();
 		return certificates;
 	}

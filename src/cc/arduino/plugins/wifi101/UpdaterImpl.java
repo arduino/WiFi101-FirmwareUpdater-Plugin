@@ -55,6 +55,11 @@ public class UpdaterImpl extends UpdaterJFrame {
 
 		refreshSerialPortList();
 
+		websites.add("arduino.cc:443");
+		websites.add("cloud.arduino.cc:443");
+
+		refreshCertList();
+
 		// flasher = new CLIFlasher() {
 		flasher = new JavaFlasher() {
 			@Override

@@ -34,13 +34,16 @@ import java.util.ArrayList;
 @SuppressWarnings("serial")
 public class WiFi101CertificateBundle extends ArrayList<WiFi101Certificate> {
 
-	private final byte START_PATTERN[] = new byte[] { 0x01, (byte) 0xF1, 0x02, (byte) 0xF2, 0x03, (byte) 0xF3, 0x04,
+	public static final byte START_PATTERN_V0[] = new byte[] { 0x01, (byte) 0xF1, 0x02, (byte) 0xF2, 0x03, (byte) 0xF3, 0x04,
 	    (byte) 0xF4, 0x05, (byte) 0xF5, 0x06, (byte) 0xF6, 0x07, (byte) 0xF7, 0x08, (byte) 0xF8 };
 
-	public byte[] getEncoded() {
+	public static final byte START_PATTERN_V1[] = new byte[] { 0x11, (byte) 0xF1, 0x12, (byte) 0xF2, 0x13, (byte) 0xF3, 0x14,
+	    (byte) 0xF4, 0x15, (byte) 0xF5, 0x16, (byte) 0xF6, 0x17, (byte) 0xF7, 0x18, (byte) 0xF8 };
+
+	public byte[] getEncodedV0() {
 		ByteArrayOutputStream res = new ByteArrayOutputStream();
 		try {
-			res.write(START_PATTERN);
+			res.write(START_PATTERN_V0);
 			
 			// Write number of certs, little endian
 			res.write(size());
@@ -49,7 +52,29 @@ public class WiFi101CertificateBundle extends ArrayList<WiFi101Certificate> {
 			res.write(0);
 			
 			for (WiFi101Certificate cert : this) {
-				res.write(cert.getEncoded());
+				res.write(cert.getEncodedV0());
+			}
+		} catch (IOException e) {
+			// Should never happen...
+			e.printStackTrace();
+			return null;
+		}
+		return res.toByteArray();
+	}
+
+	public byte[] getEncodedV1() {
+		ByteArrayOutputStream res = new ByteArrayOutputStream();
+		try {
+			res.write(START_PATTERN_V1);
+			
+			// Write number of certs, little endian
+			res.write(size());
+			res.write(0);
+			res.write(0);
+			res.write(0);
+			
+			for (WiFi101Certificate cert : this) {
+				res.write(cert.getEncodedV1());
 			}
 		} catch (IOException e) {
 			// Should never happen...

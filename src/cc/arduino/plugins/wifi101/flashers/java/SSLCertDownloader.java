@@ -89,7 +89,7 @@ public class SSLCertDownloader {
 			throws IOException, SSLPeerUnverifiedException {
 		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		connection.setSSLSocketFactory(ssl.getSocketFactory());
-		connection.getResponseCode();
+		connection.connect();
 		Certificate[] certificates = connection.getServerCertificates();
 		connection.disconnect();
 		return certificates;
@@ -100,7 +100,7 @@ public class SSLCertDownloader {
 		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		connection.setHostnameVerifier((str, sess) -> true);
 		connection.setSSLSocketFactory(ssl.getSocketFactory());
-		connection.getResponseCode();
+		connection.connect();
 		Certificate[] certificates = connection.getServerCertificates();
 		connection.disconnect();
 		return certificates;

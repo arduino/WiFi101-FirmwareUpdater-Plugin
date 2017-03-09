@@ -117,15 +117,27 @@ public abstract class JavaFlasher implements Flasher {
 	public void uploadCertificates(String port, List<String> websites) throws Exception {
 		FlasherSerialClient client = null;
 		try {
-			progress(20, "Connecting to programmer...");
+			progress(10, "Connecting to programmer...");
 			client = new FlasherSerialClient();
 			client.open(port);
 			client.hello();
 			int maxPayload = client.getMaximumPayload();
 
+			progress(20, "Reading section header");
+			byte[] startPattern = client.readFlash(0x00004000, 16);
+
 			WiFi101CertificateBundle certBundle = createBundleFromWebsites(websites);
 
-			byte[] certData = certBundle.getEncoded();
+			byte[] certData;
+
+			if (Arrays.equals(WiFi101CertificateBundle.START_PATTERN_V0, startPattern)) {
+				certData = certBundle.getEncodedV0();
+			} else if (Arrays.equals(WiFi101CertificateBundle.START_PATTERN_V1, startPattern)) {
+				certData = certBundle.getEncodedV1();
+			} else {
+				throw new Exception("Unknown starting pattern, please reflash firmware!");
+			}
+
 			int size = certData.length;
 			int address = 0x00004000;
 			int written = 0;

@@ -34,7 +34,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -49,7 +51,8 @@ import org.bouncycastle.asn1.x509.Time;
 
 public class WiFi101Certificate {
 
-	byte data[];
+	byte v0Data[];
+	byte v1Data[];
 	String subject;
 	String hash;
 
@@ -67,22 +70,38 @@ public class WiFi101Certificate {
 		}
 		byte[] publicModulusLen = shortToBytes(publicModulus.length);
 		byte[] name1hash = getSubjectValueHash(x509);
-		byte[] notBefore = encodeTimestamp(x509.getNotBefore());
-		byte[] notAfter = encodeTimestamp(x509.getNotAfter());
+		byte[] notBeforeV0 = encodeTimestampV0(x509.getNotBefore());
+		byte[] notAfterV0 = encodeTimestampV0(x509.getNotAfter());
+		byte[] notBeforeV1 = encodeTimestampV1(x509.getNotBefore());
+		byte[] notAfterV1 = encodeTimestampV1(x509.getNotAfter());
+		byte[] type = {0x01, 0x00, 0x00, 0x00}; // for RSA
 
-		ByteArrayOutputStream res = new ByteArrayOutputStream();
-		res.write(name1hash);
-		res.write(publicModulusLen);
-		res.write(publicExponentLen);
-		res.write(notBefore);
-		res.write(notAfter);
-		res.write(publicModulus);
-		res.write(publicExponent);
-		while (res.size() % 4 != 0)
-			res.write(0xFF);
-		data = res.toByteArray();
+		ByteArrayOutputStream v0Res = new ByteArrayOutputStream();
+		v0Res.write(name1hash);
+		v0Res.write(publicModulusLen);
+		v0Res.write(publicExponentLen);
+		v0Res.write(notBeforeV0);
+		v0Res.write(notAfterV0);
+		v0Res.write(publicModulus);
+		v0Res.write(publicExponent);
+		while (v0Res.size() % 4 != 0)
+			v0Res.write(0xFF);
+		v0Data = v0Res.toByteArray();
 
-		byte[] digest = MessageDigest.getInstance("SHA-1").digest(data);
+		ByteArrayOutputStream v1Res = new ByteArrayOutputStream();
+		v1Res.write(name1hash);
+		v1Res.write(notBeforeV1);
+		v1Res.write(notAfterV1);
+		v1Res.write(type);
+		v1Res.write(publicModulusLen);
+		v1Res.write(publicExponentLen);
+		v1Res.write(publicModulus);
+		v1Res.write(publicExponent);
+		while (v1Res.size() % 4 != 0)
+			v1Res.write(0xFF);
+		v1Data = v1Res.toByteArray();
+
+		byte[] digest = MessageDigest.getInstance("SHA-1").digest(v0Data);
 		hash = DatatypeConverter.printHexBinary(digest).substring(0, 6);
 	}
 
@@ -99,11 +118,37 @@ public class WiFi101Certificate {
 		return ret;
 	}
 
-	private static byte[] encodeTimestamp(Date notBefore) throws IOException {
+	private static byte[] encodeTimestampV0(Date notBefore) throws IOException {
 		ByteArrayOutputStream encoded = new ByteArrayOutputStream();
 		ASN1OutputStream asn1 = new ASN1OutputStream(encoded);
 		asn1.writeObject(new Time(notBefore));
 		return Arrays.copyOfRange(encoded.toByteArray(), 2, 22);
+	}
+
+	private static byte[] encodeTimestampV1(Date timestamp) throws IOException {
+		ByteArrayOutputStream encoded = new ByteArrayOutputStream();
+
+		TimeZone timeZone = TimeZone.getTimeZone("UTC");
+		Calendar cal = Calendar.getInstance(timeZone);
+		cal.setTime(timestamp);
+
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int minutes = cal.get(Calendar.MINUTE);
+		int seconds = cal.get(Calendar.SECOND);
+
+		encoded.write((byte)(year & 0xff));
+		encoded.write((byte)((year >> 8) & 0xff));
+		encoded.write((byte)(month));
+		encoded.write((byte)(day));
+		encoded.write((byte)(hour));
+		encoded.write((byte)(minutes));
+		encoded.write((byte)(seconds));
+		encoded.write((byte)(0xcc));
+
+		return encoded.toByteArray();
 	}
 
 	private static byte[] getSubjectValueHash(X509Certificate x509) throws NoSuchAlgorithmException, IOException {
@@ -139,7 +184,11 @@ public class WiFi101Certificate {
 		return res.toByteArray();
 	}
 
-	public byte[] getEncoded() {
-		return data.clone();
+	public byte[] getEncodedV0() {
+		return v0Data.clone();
+	}
+
+	public byte[] getEncodedV1() {
+		return v1Data.clone();
 	}
 }

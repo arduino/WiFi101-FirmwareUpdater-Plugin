@@ -42,10 +42,26 @@
         text-transform: uppercase;
         text-align: center;
         text-decoration: none;
-        background-color: #00979c;
-        border: 0px;
-        color: #fff;
         padding: 14px 28px;
+        position: relative; 
+        background-color: #00979C;
+        color: #ffffff;
+        border: 0;
+        box-shadow: 0 6px #005c5f;
+        top: 0px;
+        -webkit-appearance: none;
+        -webkit-border-radius: 0;
+      }
+
+      .button:hover {
+        top: 2px;
+        box-shadow: 0 4px #005c5f;
+        border: none;
+      }
+
+      .button:active {
+        top: 2px;
+        box-shadow: 0 0px #005c5f;
       }
     </style>
   </head>
@@ -104,8 +120,8 @@
           <input type="submit" name="connect" value="Connect" class="button">
         </form>
         <br>
-          <p>Please introduce your WiFi credentials.
-            <br>After that, the board will connect to your WiFi network.</br>
+          <p>Please enter your WiFi network credentials.
+            <br>Then the board will attempt to connect to your WiFi network.</br>
           </p>
         </br>
       </div>

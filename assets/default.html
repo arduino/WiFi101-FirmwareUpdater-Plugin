@@ -64,6 +64,30 @@
         box-shadow: 0 0px #005c5f;
       }
     </style>
+    <script type='text/javascript'>
+      function submit() {
+        var ssid = document.getElementById('ssid').value;
+        var password = document.getElementById('password').value;
+
+        if (ssid.length === 0) {
+          alert('Please enter an SSID');
+          return;
+        }
+
+        var body = 'login=' + escape(ssid) + '&password=' + escape(password) + '&device-name=&connect=Connect';
+
+        var xhr = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+        
+        xhr.onreadystatechange = function() {
+          if (this.readyState === 4) {
+            window.close();
+          }
+        };
+        
+        xhr.open('POST', '/', true);
+        xhr.send(body);
+      }
+    </script>
   </head>
   <body>
     <div id='pagelogo'>
@@ -111,14 +135,14 @@
     </div>
     <div id="log-in-form-container">
       <div id='text'>
-        <form id="form-holder" method="post" action="">
+        <div>
           SSID:<br>
-          <input type="text" name="login" value="" maxlength="32"><br>
+          <input id="ssid" type="text" name="login" value="" maxlength="32"><br>
           PASSWORD:<br>
-          <input type="password" name="password" value="" maxlength="64"><br>
+          <input id="password" type="password" name="password" value="" maxlength="64"><br>
           <input type="hidden" name="device-name" value="" maxlength="48">
-          <input type="submit" name="connect" value="Connect" class="button">
-        </form>
+          <input type="button" name="connect" value="Connect" class="button" onclick="submit();">
+        </div>
         <br>
           <p>Please enter your WiFi network credentials.
             <br>Then the board will attempt to connect to your WiFi network.</br>

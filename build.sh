@@ -28,7 +28,7 @@
 
 REV=0.9.1
 ZIP_FILENAME=WiFi101-Updater-ArduinoIDE-Plugin-$REV
-REQUIRED_JARS="pde.jar arduino-core.jar jssc-2.8.0.jar bcpg-jdk15on-152.jar bcprov-jdk15on-152.jar"
+REQUIRED_JARS="pde.jar arduino-core.jar jssc-2.8.0-arduino1.jar bcpg-jdk15on-152.jar bcprov-jdk15on-152.jar"
 
 # Check existence of the IDE folder
 if [[ -z "$IDE_FOLDER" ]]; then

@@ -37,6 +37,7 @@ import java.net.URISyntaxException;
 public class WINC1500Firmware {
 
 	public static WINC1500Firmware available[] = new WINC1500Firmware[] {
+	    new WINC1500Firmware("WINC1501 Model B", "19.5.4", "firmwares/19.5.4/m2m_aio_3a0.bin"),
 	    new WINC1500Firmware("WINC1501 Model B", "19.5.2", "firmwares/19.5.2/m2m_aio_3a0.bin"),
 	    new WINC1500Firmware("WINC1501 Model B", "19.4.4", "firmwares/19.4.4/m2m_aio_3a0.bin"),
 	    new WINC1500Firmware("WINC1501 Model A", "19.4.4", "firmwares/19.4.4/m2m_aio_2b0.bin") };

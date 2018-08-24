@@ -28,6 +28,8 @@
 package cc.arduino.plugins.wifi101;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.swing.ListModel;
 import javax.swing.event.ListDataListener;

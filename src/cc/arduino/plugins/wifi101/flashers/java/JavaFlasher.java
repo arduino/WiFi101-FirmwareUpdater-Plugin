@@ -72,7 +72,7 @@ public abstract class JavaFlasher implements Flasher {
 
 			byte[] fwData = fw.getData();
 			int size = fwData.length;
-			int address = 0x00000000;
+			int address = 0x00010000;
 			int written = 0;
 
 			progress(20, "Erasing target...");
@@ -87,8 +87,8 @@ public abstract class JavaFlasher implements Flasher {
 				written += len;
 				address += len;
 			}
-
-			int readed = 0;
+			client.readFlash(0x00000000, 0);
+		/*	int readed = 0;
 			address = 0x00000000;
 			while (readed < size) {
 				progress(60 + readed * 40 / size, "Verifying...");
@@ -101,7 +101,7 @@ public abstract class JavaFlasher implements Flasher {
 				}
 				readed += len;
 				address += len;
-			}
+			}*/
 			progress(100, "Done!");
 		} finally {
 			try {

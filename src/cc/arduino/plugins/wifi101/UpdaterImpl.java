@@ -40,8 +40,8 @@ import processing.app.Base;
 
 @SuppressWarnings("serial")
 public class UpdaterImpl extends UpdaterJFrame {
-
 	private Flasher flasher;
+  private SerialPortListModel listModel;
 
 	public UpdaterImpl() throws Exception {
 		super();
@@ -51,10 +51,13 @@ public class UpdaterImpl extends UpdaterJFrame {
 		Base.setIcon(this);
 
 		for (WINC1500Firmware firmware : WINC1500Firmware.available)
-			getFirmwareSelector().addItem(firmware);
+	  	if (firmware.board.equals("Wifi101")) {
+		    getFirmwareSelector().addItem(firmware);
+      }
 
-		refreshSerialPortList();
-
+		getBoardSelector().addItem("Wifi101");
+		getBoardSelector().addItem("WifiNINA");
+  	refreshSerialPortList();
 		websites.add("arduino.cc:443");
 
 		refreshCertList();
@@ -80,13 +83,17 @@ public class UpdaterImpl extends UpdaterJFrame {
 		getCertSelector().setModel(model);
 	}
 
-	private SerialPortListModel listModel;
-
 	@Override
 	protected void refreshSerialPortList() {
 		listModel = new SerialPortListModel();
 		getSerialPortList().setModel(listModel);
 	}
+
+  @Override
+  protected	void 	SelectBoardModule() {
+	  String selectedBoard = listModel.getModuleBoard(getSelectedPort().getBoardName());
+	  getBoardSelector().setSelectedItem( selectedBoard);
+  }
 
 	private BoardPort getSelectedPort() {
 		int i = getSerialPortList().getSelectedIndex();
@@ -119,6 +126,15 @@ public class UpdaterImpl extends UpdaterJFrame {
 				resetProgress();
 			};
 		}.start();
+	}
+
+  @Override
+	protected void updateFirmwareSelector() {
+		getFirmwareSelector().removeAllItems();
+		for (WINC1500Firmware firmware : WINC1500Firmware.available)
+		if (firmware.board.equals(getBoardSelector().getSelectedItem())) {
+			getFirmwareSelector().addItem(firmware);
+		}
 	}
 
 	@Override

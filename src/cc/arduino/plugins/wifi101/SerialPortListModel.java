@@ -28,6 +28,8 @@
 package cc.arduino.plugins.wifi101;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.swing.ListModel;
 import javax.swing.event.ListDataListener;
@@ -38,10 +40,13 @@ import processing.app.Base;
 class SerialPortListModel implements ListModel<String> {
 
 	private List<BoardPort> ports;
-
+	private HashMap <String,String> boardList;
 	public SerialPortListModel() {
 		ports = Base.getDiscoveryManager().discovery();
 		ports.removeIf(port -> !port.getProtocol().equals("serial"));
+		boardList= new HashMap();
+		boardList.put("Arduino MKR WiFi 1010","WifiNINA");
+		boardList.put("Arduino/Genuino MKR1000","Wifi101");
 	}
 
 	@Override
@@ -64,5 +69,9 @@ class SerialPortListModel implements ListModel<String> {
 
 	public BoardPort getPort(int index) {
 		return ports.get(index);
+	}
+
+	public String getModuleBoard(String board) {
+		return boardList.get(board);
 	}
 }

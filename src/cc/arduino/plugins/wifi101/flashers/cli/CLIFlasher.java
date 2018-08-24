@@ -50,7 +50,7 @@ public abstract class CLIFlasher implements Flasher {
 		try {
 			String jarPath = CLIFlasher.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 			File jarFolder = new File(jarPath).getParentFile();
-			String toolName = "winc1500-uploader";
+			String toolName ="winc1500-uploader";
 			if (OSUtils.isWindows()) {
 				toolName += "-windows.exe";
 			} else if (OSUtils.isMacOS()) {

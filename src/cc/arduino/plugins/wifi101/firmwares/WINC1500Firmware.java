@@ -37,18 +37,22 @@ import java.net.URISyntaxException;
 public class WINC1500Firmware {
 
 	public static WINC1500Firmware available[] = new WINC1500Firmware[] {
-	    new WINC1500Firmware("WINC1501 Model B", "19.5.4", "firmwares/19.5.4/m2m_aio_3a0.bin"),
-	    new WINC1500Firmware("WINC1501 Model B", "19.5.2", "firmwares/19.5.2/m2m_aio_3a0.bin"),
-	    new WINC1500Firmware("WINC1501 Model B", "19.4.4", "firmwares/19.4.4/m2m_aio_3a0.bin"),
-	    new WINC1500Firmware("WINC1501 Model A", "19.4.4", "firmwares/19.4.4/m2m_aio_2b0.bin") };
+		  new WINC1500Firmware("WifiNINA firmaware", "1.0.0", "firmwares/WifiNINA/1.0.0/m2m_aio_1a0.bin","WifiNINA"),
+	    new WINC1500Firmware("WINC1501 Model B", "19.5.4", "firmwares/Wifi101/19.5.4/m2m_aio_3a0.bin","Wifi101"),
+	    new WINC1500Firmware("WINC1501 Model B", "19.4.4", "firmwares/Wifi101/19.4.4/m2m_aio_3a0.bin","Wifi101"),
+			new WINC1500Firmware("WINC1501 Model B", "19.5.2", "firmwares/Wifi101/19.5.2/m2m_aio_3a0.bin","Wifi101"),
+	    new WINC1500Firmware("WINC1501 Model A", "19.4.4", "firmwares/Wifi101/19.4.4/m2m_aio_2b0.bin","Wifi101") };
 
 	public String name;
 	public String version;
+  public String board;
 	public File file;
 
-	public WINC1500Firmware(String _name, String _version, String _filename) {
+
+	public WINC1500Firmware(String _name, String _version, String _filename,String _board) {
 		name = _name;
 		version = _version;
+		board = _board;
 		file = null;
 		try {
 			String jarPath = WINC1500Firmware.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();

@@ -119,11 +119,11 @@ public class FlasherSerialClient {
 	public byte[] readFlash(int address, int length) throws Exception {
 		sendCommand((byte) 0x01, address, length, null);
 		byte[] data = waitAnswer(500, length);
-		if (data.length != length) {
+		/*if (data.length != length) {
 			throw new Exception("Error while reading flash memory.");
 		}
 		if (!ack())
-			throw new Exception("Error while reading flash memory.");
+			throw new Exception("Error while reading flash memory.");*/
 		return data;
 	}
 

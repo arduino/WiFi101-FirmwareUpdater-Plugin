@@ -27,18 +27,155 @@
  */
 package cc.arduino.plugins.wifi101.flashers;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
-import cc.arduino.plugins.wifi101.firmwares.WINC1500Firmware;
+import javax.swing.JProgressBar;
 
-public interface Flasher {
+import cc.arduino.plugins.wifi101.flashers.java.FlasherSerialClient;
 
-	void progress(int progress, String text);
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.*;
 
-	void testConnection(String port) throws Exception;
+import java.io.ByteArrayOutputStream;
+import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import org.apache.commons.lang3.StringUtils;
+import javax.swing.JProgressBar;
 
-	void updateFirmware(String port, WINC1500Firmware fw) throws Exception;
+public class Flasher {
 
-	void uploadCertificates(String port, List<String> websites) throws Exception;
+	public String modulename;
+	public String version;
+	public File file;
+	public JProgressBar progressBar;
+	public String name;
+	public String filename;
+	public List<String> compatibleBoard;
+	public boolean certavail;
 
+	public Flasher() {}
+
+	public Flasher(String _modulename, String _version, String _filename, boolean _certavail, ArrayList<String> _compatibleBoard) {
+		modulename = _modulename;
+		compatibleBoard = new ArrayList<String>();
+		version = _version;
+		file = null;
+		name = "NINA";
+		certavail = _certavail;
+		compatibleBoard.addAll(_compatibleBoard);
+		filename = _filename;
+	}
+
+	public void progress(int progress, String text) {
+		if (text.length() > 60) {
+			text = text.substring(0, 60) + "...";
+		}
+		progressBar.setValue(progress);
+		progressBar.setStringPainted(true);
+		progressBar.setString(text);
+	}
+
+	public void testConnection(String port) throws Exception {
+		FlasherSerialClient client = null;
+		try {
+			progress(50, "Testing programmer...");
+			client = new FlasherSerialClient();
+			client.open(port);
+			client.hello();
+			progress(100, "Done!");
+		} finally {
+			if (client != null) {
+				client.close();
+			}
+		}
+	}
+
+	public void updateFirmware(String port) throws Exception {
+		// To be overridden
+	}
+
+	public void uploadCertificates(String port, List<String> websites) throws Exception {
+		// To be overridden
+	}
+
+	public void setProgressBar(JProgressBar _progressBar) {
+		progressBar = _progressBar;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public byte[] getData() throws IOException {
+		InputStream in = null;
+		try {
+			in = new FileInputStream(file);
+			ByteArrayOutputStream res = new ByteArrayOutputStream();
+			byte buff[] = new byte[4096];
+			while (in.available() > 0) {
+				int read = in.read(buff);
+				if (read == -1) {
+					break;
+				}
+				res.write(buff, 0, read);
+			}
+			return res.toByteArray();
+		} finally {
+			if (in != null) {
+				in.close();
+			}
+		}
+	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public void setFileName(String _filename) {
+		filename = _filename;
+	}
+
+	public boolean isCompatible(String boardName) {
+		for (String name : compatibleBoard) {
+			if (name.equals(boardName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean certificatesAvailable() {
+		return certavail;
+	}
+
+	public File openFirmwareFile() throws Exception {
+		try {
+			String jarPath = Flasher.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+			File jarFolder = new File(jarPath).getParentFile();
+			File fwfile = new File(jarFolder, filename);
+			return fwfile;
+		} catch (URISyntaxException e) {
+			String message = "File not found ";
+			throw new Exception(message.concat(filename));
+		}
+	}
+
+	public String toString() {
+		String names = modulename + " (" + version + ") (";
+		for (String lname : compatibleBoard) {
+			names = names.concat(lname).concat(", ");
+		}
+		names = names.substring(0, (names.length() - 2)).concat(")");
+		names = StringUtils.abbreviate(names, 75);
+		return names;
+	}
 }

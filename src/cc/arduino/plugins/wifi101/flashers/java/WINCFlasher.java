@@ -31,46 +31,39 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import org.apache.commons.lang3.StringUtils;
 
 import cc.arduino.plugins.wifi101.certs.WiFi101Certificate;
 import cc.arduino.plugins.wifi101.certs.WiFi101CertificateBundle;
-import cc.arduino.plugins.wifi101.firmwares.WINC1500Firmware;
 import cc.arduino.plugins.wifi101.flashers.Flasher;
+import javax.swing.JProgressBar;
 
-public abstract class JavaFlasher implements Flasher {
+public class WINCFlasher extends Flasher {
 
-	@Override
-	public void testConnection(String port) throws Exception {
-		FlasherSerialClient client = null;
-		try {
-			progress(50, "Testing programmer...");
-			client = new FlasherSerialClient();
-			client.open(port);
-			client.hello();
-			progress(100, "Done!");
-		} finally {
-			try {
-				if (client != null)
-					client.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+	public WINCFlasher(String _modulename, String _version, String _filename, boolean _certavail, ArrayList<String> _compatibleBoard) {
+		super(_modulename, _version, _filename, _certavail, _compatibleBoard);
 	}
 
 	@Override
-	public void updateFirmware(String port, WINC1500Firmware fw) throws Exception {
+	public void updateFirmware(String port) throws Exception {
 		FlasherSerialClient client = null;
 		try {
+			file = openFirmwareFile();
 			progress(10, "Connecting to programmer...");
 			client = new FlasherSerialClient();
 			client.open(port);
 			client.hello();
 			int maxPayload = client.getMaximumPayload();
 
-			byte[] fwData = fw.getData();
+			byte[] fwData = this.getData();
 			int size = fwData.length;
 			int address = 0x00000000;
 			int written = 0;
@@ -81,20 +74,21 @@ public abstract class JavaFlasher implements Flasher {
 			while (written < size) {
 				progress(20 + written * 40 / size, "Programming " + size + " bytes ...");
 				int len = maxPayload;
-				if (written + len > size)
+				if (written + len > size) {
 					len = size - written;
+				}
 				client.writeFlash(address, Arrays.copyOfRange(fwData, written, written + len));
 				written += len;
 				address += len;
 			}
-
 			int readed = 0;
 			address = 0x00000000;
 			while (readed < size) {
 				progress(60 + readed * 40 / size, "Verifying...");
 				int len = maxPayload;
-				if (readed + len > size)
+				if (readed + len > size) {
 					len = size - readed;
+				}
 				byte[] data = client.readFlash(address, len);
 				if (!Arrays.equals(data, Arrays.copyOfRange(fwData, readed, readed + len))) {
 					throw new Exception("Error during verify at address " + address);
@@ -104,11 +98,8 @@ public abstract class JavaFlasher implements Flasher {
 			}
 			progress(100, "Done!");
 		} finally {
-			try {
-				if (client != null)
-					client.close();
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (client != null) {
+				client.close();
 			}
 		}
 	}
@@ -148,19 +139,17 @@ public abstract class JavaFlasher implements Flasher {
 			while (written < size) {
 				progress(60 + written * 80 / size, "Programming...");
 				int len = maxPayload;
-				if (written + len > size)
+				if (written + len > size) {
 					len = size - written;
+				}
 				client.writeFlash(address, Arrays.copyOfRange(certData, written, written + len));
 				written += len;
 				address += len;
 			}
 			progress(100, "Done!");
 		} finally {
-			try {
-				if (client != null)
-					client.close();
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (client != null) {
+				client.close();
 			}
 		}
 	}

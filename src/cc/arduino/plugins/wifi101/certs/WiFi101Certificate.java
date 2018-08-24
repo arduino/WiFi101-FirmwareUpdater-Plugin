@@ -166,7 +166,6 @@ public class WiFi101Certificate {
 	private static byte[] extractPrintableString(ASN1Encodable obj) throws IOException {
 		if (obj instanceof DERPrintableString) {
 			DERPrintableString s = (DERPrintableString) obj;
-			// System.out.println("'" + s.getString() + "'");
 			return s.getString().getBytes();
 		} else if (obj instanceof DERUTF8String) {
 			DERUTF8String s = (DERUTF8String) obj;

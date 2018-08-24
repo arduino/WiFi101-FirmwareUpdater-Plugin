@@ -40,7 +40,7 @@ public class WiFi101 implements Tool {
 	}
 
 	public String getMenuTitle() {
-		return "WiFi101 Firmware Updater";
+		return "WiFi101 / WiFiNINA Firmware Updater";
 	}
 
 	public synchronized void run() {

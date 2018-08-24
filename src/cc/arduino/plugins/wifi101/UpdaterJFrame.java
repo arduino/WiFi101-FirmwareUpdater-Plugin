@@ -28,6 +28,7 @@
 package cc.arduino.plugins.wifi101;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -42,23 +43,35 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import cc.arduino.plugins.wifi101.firmwares.WINC1500Firmware;
+import cc.arduino.plugins.wifi101.flashers.Flasher;
 
 @SuppressWarnings("serial")
 public class UpdaterJFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JList<String> serialPortList;
-	private JComboBox<WINC1500Firmware> firmwareSelector;
+	private JComboBox<Flasher> firmwareSelector;
+
 	private JProgressBar updateProgressBar;
 	private JButton removeCertificateButton;
 	private JList<String> certSelector;
+	private JPanel panel_2;
+	private JPanel panel;
+	private JPanel panel_1;
+	private JLabel textArea;
+	private JLabel textFwNot;
+
+	private JButton uploadCertificatesButton;
+	private JButton addCertificateButton;
+	private JButton updateFirmwareButton;
+	private JButton testConnectionButton;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -74,10 +87,10 @@ public class UpdaterJFrame extends JFrame {
 	}
 
 	public UpdaterJFrame() {
-		setTitle("WiFi101 Firmware/Certificates Updater");
+		setTitle("WiFi101 / WiFiNINA Firmware/Certificates Updater");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 550, 520);
+		setBounds(100, 100, 500, 520);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -87,9 +100,11 @@ public class UpdaterJFrame extends JFrame {
 		gbl_contentPane.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{1.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
-		
-		JPanel panel_1 = new JPanel();
+
+		panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "1. Select port of the WiFi module", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_1.setMinimumSize(new Dimension(500, 150));
+		panel_1.setPreferredSize(new Dimension(500, 150));
 		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
 		gbc_panel_1.insets = new Insets(5, 5, 0, 5);
 		gbc_panel_1.fill = GridBagConstraints.BOTH;
@@ -102,7 +117,7 @@ public class UpdaterJFrame extends JFrame {
 		gbl_panel_1.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
 		gbl_panel_1.rowWeights = new double[]{1.0, 1.0, 0.0, Double.MIN_VALUE};
 		panel_1.setLayout(gbl_panel_1);
-		
+
 		JLabel textSelectPort = new JLabel("If the port is not listed click \"Refresh list\" button to regenerate the list");
 		textSelectPort.setOpaque(false);
 		GridBagConstraints gbc_textSelectPort = new GridBagConstraints();
@@ -112,16 +127,24 @@ public class UpdaterJFrame extends JFrame {
 		gbc_textSelectPort.gridx = 0;
 		gbc_textSelectPort.gridy = 0;
 		panel_1.add(textSelectPort, gbc_textSelectPort);
-		
+
 		serialPortList = new JList<String>();
+		JScrollPane sp = new JScrollPane(serialPortList);
+		serialPortList.setMaximumSize(new Dimension(300, 50));
 		GridBagConstraints gbc_serialPortList = new GridBagConstraints();
 		gbc_serialPortList.insets = new Insets(5, 5, 5, 5);
 		gbc_serialPortList.fill = GridBagConstraints.BOTH;
 		gbc_serialPortList.gridx = 0;
 		gbc_serialPortList.gridy = 1;
 		gbc_serialPortList.gridheight = 2;
-		panel_1.add(serialPortList, gbc_serialPortList);
-		
+		panel_1.add(sp, gbc_serialPortList);
+		serialPortList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				boolean enabled = (serialPortList.getSelectedIndex() != -1);
+				SelectBoardModule();
+			}
+		});
+
 		JButton refreshListButton = new JButton("Refresh list");
 		refreshListButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -134,21 +157,23 @@ public class UpdaterJFrame extends JFrame {
 		gbc_refreshListButton.gridx = 1;
 		gbc_refreshListButton.gridy = 1;
 		panel_1.add(refreshListButton, gbc_refreshListButton);
-		
-		JButton testConnectionButton = new JButton("Test connection");
+
+		testConnectionButton = new JButton("Test connection");
 		testConnectionButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				testConnection();
 			}
 		});
+
 		GridBagConstraints gbc_testConnectionButton = new GridBagConstraints();
 		gbc_testConnectionButton.insets = new Insets(5, 5, 5, 5);
 		gbc_testConnectionButton.gridx = 1;
 		gbc_testConnectionButton.gridy = 2;
 		panel_1.add(testConnectionButton, gbc_testConnectionButton);
-		
-		JPanel panel = new JPanel();
+
+		panel = new JPanel();
 		panel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "2. Update firmware", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		panel.setMinimumSize(new Dimension(500, 150));
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.insets = new Insets(5, 5, 0, 5);
 		gbc_panel.fill = GridBagConstraints.BOTH;
@@ -161,7 +186,7 @@ public class UpdaterJFrame extends JFrame {
 		gbl_panel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
-		
+
 		JLabel textSelectTheFirmware = new JLabel();
 		textSelectTheFirmware.setText("Select the firmware from the dropdown box below");
 		textSelectTheFirmware.setOpaque(false);
@@ -169,18 +194,24 @@ public class UpdaterJFrame extends JFrame {
 		gbc_textSelectTheFirmware.insets = new Insets(5, 5, 5, 0);
 		gbc_textSelectTheFirmware.fill = GridBagConstraints.BOTH;
 		gbc_textSelectTheFirmware.gridx = 0;
-		gbc_textSelectTheFirmware.gridy = 0;
+		gbc_textSelectTheFirmware.gridy = 1;
 		panel.add(textSelectTheFirmware, gbc_textSelectTheFirmware);
-		
-		firmwareSelector = new JComboBox<WINC1500Firmware>();
+
+		firmwareSelector = new JComboBox<Flasher>();
 		GridBagConstraints gbc_firmwareSelector = new GridBagConstraints();
 		gbc_firmwareSelector.insets = new Insets(5, 5, 5, 0);
 		gbc_firmwareSelector.fill = GridBagConstraints.HORIZONTAL;
 		gbc_firmwareSelector.gridx = 0;
-		gbc_firmwareSelector.gridy = 1;
+		gbc_firmwareSelector.gridy = 2;
 		panel.add(firmwareSelector, gbc_firmwareSelector);
-		
-		JButton updateFirmwareButton = new JButton("Update Firmware");
+
+		firmwareSelector.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateCertSection();
+			}
+		});
+
+		updateFirmwareButton = new JButton("Update Firmware");
 		updateFirmwareButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				updateFirmware();
@@ -189,11 +220,12 @@ public class UpdaterJFrame extends JFrame {
 		GridBagConstraints gbc_updateFirmwareButton = new GridBagConstraints();
 		gbc_updateFirmwareButton.insets = new Insets(5, 5, 0, 0);
 		gbc_updateFirmwareButton.gridx = 0;
-		gbc_updateFirmwareButton.gridy = 2;
+		gbc_updateFirmwareButton.gridy = 3;
 		panel.add(updateFirmwareButton, gbc_updateFirmwareButton);
-		
-		JPanel panel_2 = new JPanel();
+
+		panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "3. Update SSL root certificates", TitledBorder.LEFT, TitledBorder.TOP, null, null));
+		panel_2.setMinimumSize(new Dimension(500, 200));
 		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
 		gbc_panel_2.insets = new Insets(5, 5, 0, 5);
 		gbc_panel_2.fill = GridBagConstraints.BOTH;
@@ -206,8 +238,8 @@ public class UpdaterJFrame extends JFrame {
 		gbl_panel_2.columnWeights = new double[]{1.0, 0.0};
 		gbl_panel_2.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel_2.setLayout(gbl_panel_2);
-		
-		JLabel textArea = new JLabel();
+
+		textArea = new JLabel();
 		textArea.setText("Add domains in the list below using \"Add domain\" button");
 		textArea.setOpaque(false);
 		GridBagConstraints gbc_textArea = new GridBagConstraints();
@@ -217,7 +249,20 @@ public class UpdaterJFrame extends JFrame {
 		gbc_textArea.gridx = 0;
 		gbc_textArea.gridy = 0;
 		panel_2.add(textArea, gbc_textArea);
-		
+
+		textFwNot= new JLabel();
+		textFwNot.setText("No certificates available");
+		textFwNot.setOpaque(false);
+		textFwNot.setMinimumSize(new Dimension(500,500));
+		GridBagConstraints gbc_textFwNot = new GridBagConstraints();
+		gbc_textFwNot.gridwidth = 2;
+		gbc_textFwNot.insets = new Insets(5, 5, 5, 0);
+		gbc_textFwNot.fill = GridBagConstraints.BOTH;
+		gbc_textFwNot.gridx = 0;
+		gbc_textFwNot.gridy = 0;
+		panel_2.add(textFwNot, gbc_textFwNot);
+		textFwNot.setVisible(false);
+
 		certSelector = new JList<>();
 		certSelector.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
@@ -232,8 +277,8 @@ public class UpdaterJFrame extends JFrame {
 		gbc_certSelector.gridx = 0;
 		gbc_certSelector.gridy = 1;
 		panel_2.add(certSelector, gbc_certSelector);
-		
-		JButton addCertificateButton = new JButton("Add domain");
+
+		addCertificateButton = new JButton("Add domain");
 		addCertificateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addCertificate();
@@ -245,7 +290,7 @@ public class UpdaterJFrame extends JFrame {
 		gbc_addCertificateButton.gridx = 1;
 		gbc_addCertificateButton.gridy = 1;
 		panel_2.add(addCertificateButton, gbc_addCertificateButton);
-		
+
 		removeCertificateButton = new JButton("Remove domain");
 		removeCertificateButton.setEnabled(false);
 		removeCertificateButton.addActionListener(new ActionListener() {
@@ -259,8 +304,8 @@ public class UpdaterJFrame extends JFrame {
 		gbc_removeCertificateButton.gridx = 1;
 		gbc_removeCertificateButton.gridy = 2;
 		panel_2.add(removeCertificateButton, gbc_removeCertificateButton);
-		
-		JButton uploadCertificatesButton = new JButton("Upload Certificates to WiFi module");
+
+		uploadCertificatesButton = new JButton("Upload Certificates to WiFi module");
 		uploadCertificatesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				uploadCertificates();
@@ -272,7 +317,7 @@ public class UpdaterJFrame extends JFrame {
 		gbc_uploadCertificatesButton.gridx = 0;
 		gbc_uploadCertificatesButton.gridy = 3;
 		panel_2.add(uploadCertificatesButton, gbc_uploadCertificatesButton);
-		
+
 		updateProgressBar = new JProgressBar();
 		GridBagConstraints gbc_updateProgressBar = new GridBagConstraints();
 		gbc_updateProgressBar.insets = new Insets(5, 5, 5, 5);
@@ -280,6 +325,25 @@ public class UpdaterJFrame extends JFrame {
 		gbc_updateProgressBar.gridx = 0;
 		gbc_updateProgressBar.gridy = 3;
 		contentPane.add(updateProgressBar, gbc_updateProgressBar);
+	}
+
+	protected void hideCertificatePanel(boolean visible){
+		panel_2.setEnabled(visible);
+		certSelector.setVisible(visible);
+		uploadCertificatesButton.setVisible(visible);
+		addCertificateButton.setVisible(visible);
+		removeCertificateButton.setVisible(visible);
+		textArea.setVisible(visible);
+		textFwNot.setVisible(!visible);
+	}
+
+	protected void setEnabledCommand(boolean state) {
+		uploadCertificatesButton.setEnabled(state);
+		addCertificateButton.setEnabled(state);
+		testConnectionButton.setEnabled(state);
+		updateFirmwareButton.setEnabled(state);
+		firmwareSelector.setEnabled(state);
+		certSelector.setEnabled(state);
 	}
 
 	protected void uploadCertificates() {
@@ -306,10 +370,18 @@ public class UpdaterJFrame extends JFrame {
 		// To be overridden
 	}
 
+	protected void SelectBoardModule() {
+		// To be overridden
+	}
+
+	protected void updateCertSection() {
+		// To be overridden
+	}
+
 	protected JList<String> getSerialPortList() {
 		return serialPortList;
 	}
-	protected JComboBox<WINC1500Firmware> getFirmwareSelector() {
+	protected JComboBox<Flasher> getFirmwareSelector() {
 		return firmwareSelector;
 	}
 	protected JProgressBar getUpdateProgressBar() {

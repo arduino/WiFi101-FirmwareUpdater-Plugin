@@ -28,7 +28,7 @@
 
 REV=0.9.2
 ZIP_FILENAME=WiFi101-Updater-ArduinoIDE-Plugin-$REV
-REQUIRED_JARS="pde.jar arduino-core.jar jssc-2.8.0-arduino1.jar bcpg-jdk15on-152.jar bcprov-jdk15on-152.jar"
+REQUIRED_JARS="pde.jar arduino-core.jar jssc-2.8.0-arduino2.jar bcpg-jdk15on-152.jar bcprov-jdk15on-152.jar commons-lang3-3.3.2.jar"
 
 # Check existence of the IDE folder
 if [[ -z "$IDE_FOLDER" ]]; then
@@ -45,7 +45,7 @@ fi
 CLASSPATH="src"
 for JAR in $REQUIRED_JARS; do
 	case "$OSTYPE" in
-		darwin*)  JARFILE="$IDE_FOLDER/Java/$JAR" ;; 
+		darwin*)  JARFILE="$IDE_FOLDER/Java/$JAR" ;;
 		*)        JARFILE="$IDE_FOLDER/lib/$JAR" ;;
 	esac
 	if [[ -z "$JARFILE" ]]; then
@@ -70,7 +70,6 @@ rm -r build
 
 # Copy resources
 cp -rv firmwares $OUTPUT_FOLDER
-# cp -v winc1500-uploader-* $OUTPUT_FOLDER # This is needed if we use the CLIFlasher class instead of JavaFlasher
 
 # Create distribution .zip
 mkdir -p dist
@@ -81,6 +80,6 @@ rm -r WiFi101
 
 # Install in current IDE
 case "$OSTYPE" in
-	darwin*)  unzip -o dist/$ZIP_FILENAME.zip -d $IDE_FOLDER/Java/tools ;; 
+	darwin*)  unzip -o dist/$ZIP_FILENAME.zip -d $IDE_FOLDER/Java/tools ;;
 	*)        unzip -o dist/$ZIP_FILENAME.zip -d $IDE_FOLDER/tools ;;
 esac

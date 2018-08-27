@@ -29,7 +29,9 @@ package cc.arduino.plugins.wifi101.flashers;
 
 import java.util.List;
 
-import cc.arduino.plugins.wifi101.firmwares.WINC1500Firmware;
+import cc.arduino.plugins.wifi101.firmwares.WiFiFirmware;
+
+import javax.swing.JProgressBar;
 
 public interface Flasher {
 
@@ -37,8 +39,10 @@ public interface Flasher {
 
 	void testConnection(String port) throws Exception;
 
-	void updateFirmware(String port, WINC1500Firmware fw) throws Exception;
+	void updateFirmware(String port, WiFiFirmware fw) throws Exception;
 
 	void uploadCertificates(String port, List<String> websites) throws Exception;
+
+	void setProgress(JProgressBar _progressBar);
 
 }

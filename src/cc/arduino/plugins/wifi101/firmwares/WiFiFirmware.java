@@ -33,29 +33,33 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import cc.arduino.plugins.wifi101.flashers.Flasher;
+import cc.arduino.plugins.wifi101.flashers.java.JavaFlasher;
+import javax.swing.JProgressBar;
 
-public class WINC1500Firmware {
 
-	public static WINC1500Firmware available[] = new WINC1500Firmware[] {
-		  new WINC1500Firmware("WifiNINA firmaware", "1.0.0", "firmwares/WifiNINA/1.0.0/m2m_aio_1a0.bin","WifiNINA"),
-	    new WINC1500Firmware("WINC1501 Model B", "19.5.4", "firmwares/Wifi101/19.5.4/m2m_aio_3a0.bin","Wifi101"),
-	    new WINC1500Firmware("WINC1501 Model B", "19.4.4", "firmwares/Wifi101/19.4.4/m2m_aio_3a0.bin","Wifi101"),
-			new WINC1500Firmware("WINC1501 Model B", "19.5.2", "firmwares/Wifi101/19.5.2/m2m_aio_3a0.bin","Wifi101"),
-	    new WINC1500Firmware("WINC1501 Model A", "19.4.4", "firmwares/Wifi101/19.4.4/m2m_aio_2b0.bin","Wifi101") };
+public class WiFiFirmware {
 
 	public String name;
 	public String version;
   public String board;
+  public int fwAddress;
+  public int certAddress;
 	public File file;
+	public Flasher flasher;
+  public JProgressBar progressBar;
 
-
-	public WINC1500Firmware(String _name, String _version, String _filename,String _board) {
+	public WiFiFirmware(String _name, String _version, String _filename, String _board, int _fwAddress, int _certAddress, Flasher _flasher) {
 		name = _name;
 		version = _version;
 		board = _board;
+		fwAddress = _fwAddress;
+		certAddress = _certAddress;
 		file = null;
+		// flasher = new CLIFlasher() {
+		flasher =_flasher;
 		try {
-			String jarPath = WINC1500Firmware.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+			String jarPath = WiFiFirmware.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 			File jarFolder = new File(jarPath).getParentFile();
 			file = new File(jarFolder, _filename);
 		} catch (URISyntaxException e) {
@@ -89,5 +93,14 @@ public class WINC1500Firmware {
 
 	public File getFile() {
 		return file;
+	}
+
+	public Flasher getFlasher() {
+		return flasher;
+	}
+
+	public void setProgressBar(JProgressBar _progressBar){
+		progressBar=_progressBar;
+		flasher.setProgress(progressBar);
 	}
 }

@@ -48,14 +48,14 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import cc.arduino.plugins.wifi101.firmwares.WINC1500Firmware;
+import cc.arduino.plugins.wifi101.firmwares.WiFiFirmware;
 
 @SuppressWarnings("serial")
 public class UpdaterJFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JList<String> serialPortList;
-	private JComboBox<WINC1500Firmware> firmwareSelector;
+	private JComboBox<WiFiFirmware> firmwareSelector;
 	private JComboBox<String> boardSelector;
 	private JProgressBar updateProgressBar;
 	private JButton removeCertificateButton;
@@ -75,10 +75,10 @@ public class UpdaterJFrame extends JFrame {
 	}
 
 	public UpdaterJFrame() {
-		setTitle("WiFi101 Firmware/Certificates Updater");
+		setTitle("WiFi Firmware/Certificates Updater");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 550, 600);//setBounds(100, 100, 550, 520);
+		setBounds(100, 100, 550, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -148,6 +148,7 @@ public class UpdaterJFrame extends JFrame {
 				testConnection();
 			}
 		});
+
 		GridBagConstraints gbc_testConnectionButton = new GridBagConstraints();
 		gbc_testConnectionButton.insets = new Insets(5, 5, 5, 5);
 		gbc_testConnectionButton.gridx = 1;
@@ -168,7 +169,7 @@ public class UpdaterJFrame extends JFrame {
 		gbl_panel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
-	///RRR
+
 		JLabel textSelectTheBoard = new JLabel();
 		textSelectTheBoard.setText("Select the board from the dropdown box below");
 		textSelectTheBoard.setOpaque(false);
@@ -179,7 +180,6 @@ public class UpdaterJFrame extends JFrame {
 		gbc_textSelectTheBoard.gridy = 0;
 		panel.add(textSelectTheBoard, gbc_textSelectTheBoard);
 
-//RRR
 		boardSelector = new JComboBox<String>();
 		GridBagConstraints gbc_boardSelector = new GridBagConstraints();
 		gbc_boardSelector.insets = new Insets(5, 5, 5, 0);
@@ -193,8 +193,6 @@ public class UpdaterJFrame extends JFrame {
 			}
 		});
 
-
-
 		JLabel textSelectTheFirmware = new JLabel();
 		textSelectTheFirmware.setText("Select the firmware from the dropdown box below");
 		textSelectTheFirmware.setOpaque(false);
@@ -205,7 +203,7 @@ public class UpdaterJFrame extends JFrame {
 		gbc_textSelectTheFirmware.gridy = 2;
 		panel.add(textSelectTheFirmware, gbc_textSelectTheFirmware);
 
-		firmwareSelector = new JComboBox<WINC1500Firmware>();
+		firmwareSelector = new JComboBox<WiFiFirmware>();
 		GridBagConstraints gbc_firmwareSelector = new GridBagConstraints();
 		gbc_firmwareSelector.insets = new Insets(5, 5, 5, 0);
 		gbc_firmwareSelector.fill = GridBagConstraints.HORIZONTAL;
@@ -350,7 +348,7 @@ public class UpdaterJFrame extends JFrame {
 	protected JList<String> getSerialPortList() {
 		return serialPortList;
 	}
-	protected JComboBox<WINC1500Firmware> getFirmwareSelector() {
+	protected JComboBox<WiFiFirmware> getFirmwareSelector() {
 		return firmwareSelector;
 	}
 	protected JComboBox<String> getBoardSelector() {

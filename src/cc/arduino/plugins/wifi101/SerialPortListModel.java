@@ -45,8 +45,9 @@ class SerialPortListModel implements ListModel<String> {
 		ports = Base.getDiscoveryManager().discovery();
 		ports.removeIf(port -> !port.getProtocol().equals("serial"));
 		boardList= new HashMap();
-		boardList.put("Arduino MKR WiFi 1010","WifiNINA");
-		boardList.put("Arduino/Genuino MKR1000","Wifi101");
+
+		boardList.put("2341:8054","WifiNINA");
+		boardList.put("2341:804e","WINC1500");
 	}
 
 	@Override

@@ -45,15 +45,6 @@ import javax.net.ssl.X509TrustManager;
 
 public class SSLCertDownloader {
 
-	// public static void main(String[] args) throws Exception {
-	// Certificate[] certificates = retrieveFromURL(new
-	// URL("https://cloud.arduino.cc/"));
-	// System.out.println("Fetched " + certificates.length + " certificates. ");
-	// X509Certificate x509 = (X509Certificate) certificates[certificates.length
-	// - 1];
-	// WiFi101Certificate wiFi101Certificate = new WiFi101Certificate(x509);
-	// }
-
 	public static Certificate[] retrieveFromURL(URL url) throws NoSuchAlgorithmException, KeyManagementException,
 			SSLPeerUnverifiedException, CertificateEncodingException, FileNotFoundException, IOException {
 

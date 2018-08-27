@@ -33,15 +33,22 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import cc.arduino.packages.BoardPort;
-import cc.arduino.plugins.wifi101.firmwares.WINC1500Firmware;
+import cc.arduino.plugins.wifi101.firmwares.WiFiFirmware;
 import cc.arduino.plugins.wifi101.flashers.Flasher;
 import cc.arduino.plugins.wifi101.flashers.java.JavaFlasher;
+import cc.arduino.plugins.wifi101.flashers.java.NinaFlasher;
 import processing.app.Base;
 
 @SuppressWarnings("serial")
 public class UpdaterImpl extends UpdaterJFrame {
 	private Flasher flasher;
   private SerialPortListModel listModel;
+
+	public static WiFiFirmware fwAvailable[] = new WiFiFirmware[] {
+			new WiFiFirmware("WifiNINA firmaware", "1.0.0", "firmwares/WifiNINA/1.0.0/m2m_aio_1a0.bin","WifiNINA",0x00000000,0x00000000, new NinaFlasher()),
+			new WiFiFirmware("WINC1501 Model B", "19.5.4", "firmwares/WifiWINC1500/19.5.4/m2m_aio_3a0.bin","WINC1500",0x00000000,0x00004000, new JavaFlasher()),
+			new WiFiFirmware("WINC1501 Model B", "19.5.2", "firmwares/WifiWINC1500/19.5.2/m2m_aio_3a0.bin","WINC1500",0x00000000,0x00004000, new JavaFlasher()),
+			new WiFiFirmware("WINC1501 Model A", "19.4.4", "firmwares/WifiWINC1500/19.4.4/m2m_aio_2b0.bin","WINC1500",0x00000000,0x00004000,  new JavaFlasher())};
 
 	public UpdaterImpl() throws Exception {
 		super();
@@ -50,30 +57,17 @@ public class UpdaterImpl extends UpdaterJFrame {
 		});
 		Base.setIcon(this);
 
-		for (WINC1500Firmware firmware : WINC1500Firmware.available)
-	  	if (firmware.board.equals("Wifi101")) {
+		for (WiFiFirmware firmware : fwAvailable)
+	  	if (firmware.board.equals("WINC1500")) {
 		    getFirmwareSelector().addItem(firmware);
       }
 
-		getBoardSelector().addItem("Wifi101");
+		getBoardSelector().addItem("WINC1500");
 		getBoardSelector().addItem("WifiNINA");
   	refreshSerialPortList();
 		websites.add("arduino.cc:443");
 
 		refreshCertList();
-
-		// flasher = new CLIFlasher() {
-		flasher = new JavaFlasher() {
-			@Override
-			public void progress(int progress, String text) {
-				if (text.length() > 60) {
-					text = text.substring(0, 60) + "...";
-				}
-				getUpdateProgressBar().setValue(progress);
-				getUpdateProgressBar().setStringPainted(true);
-				getUpdateProgressBar().setString(text);
-			}
-		};
 	}
 
 	private List<String> websites = new ArrayList<>();
@@ -91,7 +85,7 @@ public class UpdaterImpl extends UpdaterJFrame {
 
   @Override
   protected	void 	SelectBoardModule() {
-	  String selectedBoard = listModel.getModuleBoard(getSelectedPort().getBoardName());
+	  String selectedBoard = listModel.getModuleBoard((getSelectedPort().getVID().toLowerCase()).concat(":").concat(getSelectedPort().getPID().toLowerCase()));
 	  getBoardSelector().setSelectedItem( selectedBoard);
   }
 
@@ -104,6 +98,8 @@ public class UpdaterImpl extends UpdaterJFrame {
 
 	@Override
 	protected void testConnection() {
+		WiFiFirmware fw = (WiFiFirmware) getFirmwareSelector().getSelectedItem();
+		fw.setProgressBar(getUpdateProgressBar());
 		BoardPort port = getSelectedPort();
 		if (port == null) {
 			JOptionPane.showMessageDialog(UpdaterImpl.this, "Please select a port to run the test!");
@@ -114,7 +110,7 @@ public class UpdaterImpl extends UpdaterJFrame {
 		new Thread() {
 			public void run() {
 				try {
-					flasher.testConnection(port.getAddress());
+					fw.getFlasher().testConnection(port.getAddress());
 					JOptionPane.showMessageDialog(UpdaterImpl.this, "The programmer is working!", "Test successful",
 		          JOptionPane.INFORMATION_MESSAGE);
 				} catch (Exception e) {
@@ -131,7 +127,7 @@ public class UpdaterImpl extends UpdaterJFrame {
   @Override
 	protected void updateFirmwareSelector() {
 		getFirmwareSelector().removeAllItems();
-		for (WINC1500Firmware firmware : WINC1500Firmware.available)
+		for (WiFiFirmware firmware : fwAvailable)
 		if (firmware.board.equals(getBoardSelector().getSelectedItem())) {
 			getFirmwareSelector().addItem(firmware);
 		}
@@ -145,13 +141,14 @@ public class UpdaterImpl extends UpdaterJFrame {
 			return;
 		}
 
-		WINC1500Firmware fw = (WINC1500Firmware) getFirmwareSelector().getSelectedItem();
+		WiFiFirmware fw = (WiFiFirmware) getFirmwareSelector().getSelectedItem();
+		fw.setProgressBar(getUpdateProgressBar());
 		setEnabled(false);
 		new Thread() {
 			@Override
 			public void run() {
 				try {
-					flasher.updateFirmware(port.getAddress(), fw);
+					fw.getFlasher().updateFirmware(port.getAddress(), fw);
 					JOptionPane.showMessageDialog(UpdaterImpl.this, "The firmware has been updated!", "Success",
 		          JOptionPane.INFORMATION_MESSAGE);
 				} catch (Exception e) {
@@ -204,6 +201,8 @@ public class UpdaterImpl extends UpdaterJFrame {
 
 	@Override
 	protected void uploadCertificates() {
+		WiFiFirmware fw = (WiFiFirmware) getFirmwareSelector().getSelectedItem();
+		fw.setProgressBar(getUpdateProgressBar());
 		BoardPort port = getSelectedPort();
 		if (port == null) {
 			JOptionPane.showMessageDialog(UpdaterImpl.this, "Please select a port to upload SSL certificates!");
@@ -215,7 +214,7 @@ public class UpdaterImpl extends UpdaterJFrame {
 			@Override
 			public void run() {
 				try {
-					flasher.uploadCertificates(port.getAddress(), websites);
+					fw.getFlasher().uploadCertificates(port.getAddress(), websites);
 
 					JOptionPane.showMessageDialog(UpdaterImpl.this, "The certificates have been uploaded!", "Success",
 		          JOptionPane.INFORMATION_MESSAGE);

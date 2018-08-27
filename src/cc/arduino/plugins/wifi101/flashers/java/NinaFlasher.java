@@ -40,7 +40,7 @@ import cc.arduino.plugins.wifi101.firmwares.WiFiFirmware;
 import cc.arduino.plugins.wifi101.flashers.Flasher;
 import javax.swing.JProgressBar;
 
-public class JavaFlasher implements Flasher {
+public class NinaFlasher implements Flasher {
 
   public JProgressBar progressBar;
 
@@ -90,20 +90,8 @@ public class JavaFlasher implements Flasher {
 				written += len;
 				address += len;
 			}
-			int readed = 0;
-			address = fw.fwAddress;
-			while (readed < size) {
-				progress(60 + readed * 40 / size, "Verifying...");
-				int len = maxPayload;
-				if (readed + len > size)
-					len = size - readed;
-				byte[] data = client.readFlash(address, len);
-				if (!Arrays.equals(data, Arrays.copyOfRange(fwData, readed, readed + len))) {
-					throw new Exception("Error during verify at address " + address);
-				}
-				readed += len;
-				address += len;
-			}
+
+			client.md5Flash(fw.fwAddress, 0);
 			progress(100, "Done!");
 		} finally {
 			try {

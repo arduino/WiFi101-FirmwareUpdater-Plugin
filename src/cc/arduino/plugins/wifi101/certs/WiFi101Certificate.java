@@ -45,6 +45,7 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OutputStream;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DERPrintableString;
+import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.x509.Time;
@@ -167,7 +168,11 @@ public class WiFi101Certificate {
 			DERPrintableString s = (DERPrintableString) obj;
 			// System.out.println("'" + s.getString() + "'");
 			return s.getString().getBytes();
+		} else if (obj instanceof DERUTF8String) {
+			DERUTF8String s = (DERUTF8String) obj;
+			return s.getString().getBytes();
 		}
+
 		ByteArrayOutputStream res = new ByteArrayOutputStream();
 		if (obj instanceof DLSequence) {
 			DLSequence s = (DLSequence) obj;

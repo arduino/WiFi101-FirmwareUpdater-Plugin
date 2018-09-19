@@ -168,8 +168,7 @@ public class WiFi101Certificate {
 			DERPrintableString s = (DERPrintableString) obj;
 			// System.out.println("'" + s.getString() + "'");
 			return s.getString().getBytes();
-		}
-		else if (obj instanceof DERUTF8String) {
+		} else if (obj instanceof DERUTF8String) {
 			DERUTF8String s = (DERUTF8String) obj;
 			return s.getString().getBytes();
 		}

@@ -64,6 +64,7 @@ public class UpdaterImpl extends UpdaterJFrame {
 		});
 		Base.setIcon(this);
 
+		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.6.1", "firmwares/WINC1500/19.6.1/m2m_aio_3a0.bin", true, new ArrayList<String>(asList("Arduino/Genuino MKR1000"))));
 		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.5.4", "firmwares/WINC1500/19.5.4/m2m_aio_3a0.bin", true, new ArrayList<String>(asList("Arduino/Genuino MKR1000"))));
 		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.5.2", "firmwares/WINC1500/19.5.2/m2m_aio_3a0.bin", true, new ArrayList<String>(asList("Arduino/Genuino MKR1000"))));
 		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.4.4", "firmwares/WINC1500/19.4.4/m2m_aio_3a0.bin", true, new ArrayList<String>(asList("Arduino/Genuino MKR1000"))));

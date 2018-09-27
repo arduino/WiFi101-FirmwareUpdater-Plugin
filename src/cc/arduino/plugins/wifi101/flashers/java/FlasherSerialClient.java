@@ -127,6 +127,15 @@ public class FlasherSerialClient {
 		return data;
 	}
 
+	public byte[] md5Flash(int address, int length) throws Exception {
+		sendCommand((byte) 0x04, address, length, null);
+		if (ack(5000)) {
+			byte[] data = waitAnswer(5000, 16);
+			return data;
+		}
+		return null;
+	}
+
 	public void writeFlash(int address, byte data[]) throws Exception {
 		sendCommand((byte) 0x02, address, 0, data);
 		if (!ack())

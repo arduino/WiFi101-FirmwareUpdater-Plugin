@@ -144,8 +144,14 @@ public class FlasherSerialClient {
 
 	public void eraseFlash(int address, int size) throws Exception {
 		sendCommand((byte) 0x03, address, size, null);
-		if (!ack(10000))
+		if (!ack(20000))
 			throw new Exception("Error while erasing flash memory.");
+	}
+
+	public void addCertificateHighLevel(int command, byte payload[]) throws Exception {
+		sendCommand((byte) 0x55, command, command, payload);
+		if (!ack(20000))
+			throw new Exception("Error while uploading certificate.");
 	}
 
 	private boolean ack() throws InterruptedException {

@@ -43,6 +43,9 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import org.apache.commons.lang3.StringUtils;
 import java.security.MessageDigest;
+import org.apache.commons.codec.binary.Base64;
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 
 import cc.arduino.plugins.wifi101.certs.WiFi101Certificate;
 import cc.arduino.plugins.wifi101.certs.WiFi101CertificateBundle;
@@ -75,6 +78,7 @@ public class NinaFlasher extends Flasher {
 			int written = 0;
 
 			progress(20, "Erasing target...");
+
 			client.eraseFlash(address, size);
 
 			while (written < size) {
@@ -109,13 +113,81 @@ public class NinaFlasher extends Flasher {
 
 	@Override
 	public void uploadCertificates(String port, List<String> websites) throws Exception {
-		//TODO:to be implemented
+		FlasherSerialClient client = null;
+		try {
+			file = openFirmwareFile();
+			progress(10, "Connecting to programmer...");
+			client = new FlasherSerialClient();
+			client.open(port);
+			client.hello();
+			int maxPayload = client.getMaximumPayload();
+			int count = websites.size();
+
+			for (String website : websites) {
+				URL url;
+				try {
+					url = new URL(website);
+				} catch (MalformedURLException e1) {
+					url = new URL("https://" + website);
+				}
+
+				progress(30 + 20 * count / websites.size(), "Downloading certificate from " + website + "...");
+				Certificate[] certificates = SSLCertDownloader.retrieveFromURL(url);
+
+				// Pick the latest certificate (that should be the root cert)
+				X509Certificate x509 = (X509Certificate) certificates[certificates.length - 1];
+				String pem = convertToPem(x509);
+
+				website = website.split(":")[0];
+				int size = pem.length();
+				int written = 0;
+
+				while (written < size) {
+					int len = maxPayload - 20;
+					if (written + len > size) {
+						len = size - written;
+					}
+
+					// TODO: is it only my impression or Java has too many methods to handle byte arrays?
+					// Have this stuff rewritten by someone who knows all them
+					ByteBuffer buff = ByteBuffer.allocate(len + 20);
+					buff.put(website.getBytes());
+					byte[] dummy = new byte[20 - website.length()];
+					buff.put(dummy);
+					byte[] payload = Arrays.copyOfRange(pem.getBytes(), written, written + len);
+					buff.put(payload);
+					byte data[] = buff.array();
+
+					byte action = 1; 		//CREATE;
+					if (written != 0) {
+						action = 0; 		//APPEND;
+					}
+					client.addCertificateHighLevel(action, data);
+					written += len;
+				}
+			}
+		} finally {
+			if (client != null) {
+				client.close();
+			}
+		}
 	}
 
-	//TODO: public WiFi101CertificateBundle createBundleFromWebsites to be implemented
-	/*public WiFi101CertificateBundle createBundleFromWebsites(List<String> websites) throws Exception {
-		//TODO:to be implemented
-	}*/
+	protected static String convertToPem(X509Certificate cert) {
+		Base64 encoder = new Base64(64);
+		String cert_begin = "-----BEGIN CERTIFICATE-----\n";
+		String end_cert = "-----END CERTIFICATE-----";
+
+		try {
+			byte[] derCert = cert.getEncoded();
+			String pemCertPre = new String(encoder.encode(derCert));
+			String pemCert = cert_begin + pemCertPre + end_cert;
+			return pemCert;
+		} catch (Exception e) {
+			// do nothing
+			return "";
+		}
+	}
 
 	public static byte[] getMD5Checksum(byte[] buffer) throws Exception{
 		try {

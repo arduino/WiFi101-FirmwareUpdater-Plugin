@@ -44,6 +44,7 @@ import java.net.URISyntaxException;
 import org.apache.commons.lang3.StringUtils;
 import java.security.MessageDigest;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
@@ -122,6 +123,7 @@ public class NinaFlasher extends Flasher {
 			client.hello();
 			int maxPayload = client.getMaximumPayload();
 			int count = websites.size();
+			String pem = "";
 
 			for (String website : websites) {
 				URL url;
@@ -136,35 +138,34 @@ public class NinaFlasher extends Flasher {
 
 				// Pick the latest certificate (that should be the root cert)
 				X509Certificate x509 = (X509Certificate) certificates[certificates.length - 1];
-				String pem = convertToPem(x509);
+				pem = convertToPem(x509) + "\n" + pem;
+			}
 
-				website = website.split(":")[0];
-				int size = pem.length();
-				int written = 0;
+			byte[] pemArray = pem.getBytes();
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			output.write(pemArray);
+			while (output.size() % maxPayload != 0) {
+				output.write(0);
+			}
+			byte[] fwData = output.toByteArray();
 
-				while (written < size) {
-					int len = maxPayload - 20;
-					if (written + len > size) {
-						len = size - written;
-					}
+			int size = fwData.length;
+			int address = 0x190000;
+			int written = 0;
 
-					// TODO: is it only my impression or Java has too many methods to handle byte arrays?
-					// Have this stuff rewritten by someone who knows all them
-					ByteBuffer buff = ByteBuffer.allocate(len + 20);
-					buff.put(website.getBytes());
-					byte[] dummy = new byte[20 - website.length()];
-					buff.put(dummy);
-					byte[] payload = Arrays.copyOfRange(pem.getBytes(), written, written + len);
-					buff.put(payload);
-					byte data[] = buff.array();
+			progress(20, "Erasing target...");
 
-					byte action = 1; 		//CREATE;
-					if (written != 0) {
-						action = 0; 		//APPEND;
-					}
-					client.addCertificateHighLevel(action, data);
-					written += len;
+			client.eraseFlash(address, size);
+
+			while (written < size) {
+				progress(20 + written * 40 / size, "Programming " + size + " bytes ...");
+				int len = maxPayload;
+				if (written + len > size) {
+					len = size - written;
 				}
+				client.writeFlash(address, Arrays.copyOfRange(fwData, written, written + len));
+				written += len;
+				address += len;
 			}
 		} finally {
 			if (client != null) {
@@ -174,7 +175,7 @@ public class NinaFlasher extends Flasher {
 	}
 
 	protected static String convertToPem(X509Certificate cert) {
-		Base64 encoder = new Base64(64);
+		Base64 encoder = new Base64(64, "\n".getBytes());
 		String cert_begin = "-----BEGIN CERTIFICATE-----\n";
 		String end_cert = "-----END CERTIFICATE-----";
 

@@ -150,7 +150,7 @@ public class NinaFlasher extends Flasher {
 			byte[] fwData = output.toByteArray();
 
 			int size = fwData.length;
-			int address = 0x190000;
+			int address = 0x10000;
 			int written = 0;
 
 			progress(20, "Erasing target...");

@@ -153,6 +153,10 @@ public class NinaFlasher extends Flasher {
 			int address = 0x10000;
 			int written = 0;
 
+			if (size > 0x20000) {
+				throw new Exception("Too many certificates!");
+			}
+
 			progress(20, "Erasing target...");
 
 			client.eraseFlash(address, size);

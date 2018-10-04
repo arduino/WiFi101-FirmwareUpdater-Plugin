@@ -270,13 +270,14 @@ public class UpdaterJFrame extends JFrame {
 				getRemoveCertificateButton().setEnabled(enabled);
 			}
 		});
+		JScrollPane scrollWebsites = new JScrollPane(certSelector);
 		GridBagConstraints gbc_certSelector = new GridBagConstraints();
 		gbc_certSelector.gridheight = 2;
 		gbc_certSelector.insets = new Insets(0, 0, 5, 5);
 		gbc_certSelector.fill = GridBagConstraints.BOTH;
 		gbc_certSelector.gridx = 0;
 		gbc_certSelector.gridy = 1;
-		panel_2.add(certSelector, gbc_certSelector);
+		panel_2.add(scrollWebsites, gbc_certSelector);
 
 		addCertificateButton = new JButton("Add domain");
 		addCertificateButton.addActionListener(new ActionListener() {

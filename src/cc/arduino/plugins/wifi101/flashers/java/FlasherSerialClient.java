@@ -94,8 +94,12 @@ public class FlasherSerialClient {
 		Thread.sleep(2500);
 	}
 
-	public void close() throws SerialPortException {
-		port.closePort();
+	public void close() throws SerialException {
+		try {
+			port.closePort();
+		} catch (Exception e) {
+			throw new SerialException(format(tr("Error opening serial port.\nClose the serial monitor (if open) or any program using port '{0}'"), port.getPortName()));
+		}
 	}
 
 	public void hello() throws Exception {

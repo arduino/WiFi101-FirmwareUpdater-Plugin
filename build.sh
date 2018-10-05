@@ -26,7 +26,7 @@
 # invalidate any other reasons why the executable file might be covered by
 # the GNU General Public License.
 
-REV=0.9.2
+REV=0.10.0
 ZIP_FILENAME=WiFi101-Updater-ArduinoIDE-Plugin-$REV
 REQUIRED_JARS="pde.jar arduino-core.jar jssc-2.8.0-arduino2.jar bcpg-jdk15on-152.jar bcprov-jdk15on-152.jar commons-lang3-3.3.2.jar commons-codec-1.7.jar"
 

@@ -133,8 +133,8 @@ public class FlasherSerialClient {
 
 	public byte[] md5Flash(int address, int length) throws Exception {
 		sendCommand((byte) 0x04, address, length, null);
-		if (ack(5000)) {
-			byte[] data = waitAnswer(5000, 16);
+		if (ack(10000)) {
+			byte[] data = waitAnswer(10000, 16);
 			return data;
 		}
 		return null;
@@ -159,7 +159,7 @@ public class FlasherSerialClient {
 	}
 
 	private boolean ack() throws InterruptedException {
-		return ack(200);
+		return ack(1000);
 	}
 
 	private boolean ack(int timeout) throws InterruptedException {

@@ -146,7 +146,7 @@ public class Flasher {
 
 	public boolean isCompatible(String boardName) {
 		for (String name : compatibleBoard) {
-			if (name.equals(boardName)) {
+			if (name.toLowerCase().equals(boardName.toLowerCase())) {
 				return true;
 			}
 		}

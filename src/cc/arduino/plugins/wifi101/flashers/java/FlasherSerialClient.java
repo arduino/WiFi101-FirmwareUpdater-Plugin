@@ -104,9 +104,10 @@ public class FlasherSerialClient {
 
 	public void hello() throws Exception {
 		sendCommand((byte) 0x99, 0x11223344, 0x55667788, null);
-		byte[] answer = waitAnswer(100, 6);
-		if (answer.length != 6 || answer[0] != 'v')
+		byte[] answer = waitAnswer(2000, 6, true);
+		if (answer.length != 6 || answer[0] != 'v') {
 			throw new Exception("Programmer not responding");
+		}
 		String version = new String(answer);
 		if (!version.equals("v10000"))
 			throw new Exception("Programmer version mismatch: " + version + ", but v10000 is required!");
@@ -170,11 +171,15 @@ public class FlasherSerialClient {
 	}
 
 	private byte[] waitAnswer(int timeout, int expectedLen) throws InterruptedException {
+		return waitAnswer(timeout, expectedLen, false);
+	}
+
+	private byte[] waitAnswer(int timeout, int expectedLen, boolean asciionly) throws InterruptedException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		int written = 0;
 		while (timeout > 0 && written < expectedLen) {
 			int c = read();
-			if (c != -1) {
+			if (c != -1 && (!asciionly || (c > 0 && c < 128))) {
 				out.write(c);
 				written++;
 				continue;

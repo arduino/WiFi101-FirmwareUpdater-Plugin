@@ -47,14 +47,13 @@ public class FlasherSerialClient {
 	private volatile byte recvBuffer[] = new byte[1000000];
 	private volatile int recvPos = 0, writePos = 0;
 
-	public void open(String portName) throws SerialException, InterruptedException {
-
+	public void open(String portName, int baudrate) throws SerialException, InterruptedException {
 		try {
 			port = new SerialPort(portName);
 			if (!port.openPort()) {
 				throw new SerialException("Error opening serial port");
 			}
-			boolean res = port.setParams(115200, 8, STOPBITS_1, PARITY_NONE, true, true);
+			boolean res = port.setParams(baudrate, 8, STOPBITS_1, PARITY_NONE, true, true);
 			if (!res) {
 				System.err.println(format(tr("Error while setting serial port parameters: {0} {1} {2} {3}"), 115200,
 				    PARITY_NONE, 8, STOPBITS_1));

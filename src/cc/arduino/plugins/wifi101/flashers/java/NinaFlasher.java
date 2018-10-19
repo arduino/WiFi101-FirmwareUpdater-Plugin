@@ -58,8 +58,8 @@ public class NinaFlasher extends Flasher {
 
 	public byte[] md5Checksum;
 
-	public NinaFlasher(String _modulename, String _version, String _filename, boolean _certavail, ArrayList<String> _compatibleBoard) {
-		super(_modulename, _version, _filename, _certavail, _compatibleBoard);
+	public NinaFlasher(String _modulename, String _version, String _filename, boolean _certavail, int _baudrate, ArrayList<String> _compatibleBoard) {
+		super(_modulename, _version, _filename, _certavail, _baudrate, _compatibleBoard);
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class NinaFlasher extends Flasher {
 			file = openFirmwareFile();
 			progress(10, "Connecting to programmer...");
 			client = new FlasherSerialClient();
-			client.open(port);
+			client.open(port, this.baudrate);
 			client.hello();
 			int maxPayload = client.getMaximumPayload();
 
@@ -119,7 +119,7 @@ public class NinaFlasher extends Flasher {
 			file = openFirmwareFile();
 			progress(10, "Connecting to programmer...");
 			client = new FlasherSerialClient();
-			client.open(port);
+			client.open(port, this.baudrate);
 			client.hello();
 			int maxPayload = client.getMaximumPayload();
 			int count = websites.size();

@@ -61,10 +61,11 @@ public class Flasher {
 	public String filename;
 	public List<String> compatibleBoard;
 	public boolean certavail;
+	protected int baudrate;
 
 	public Flasher() {}
 
-	public Flasher(String _modulename, String _version, String _filename, boolean _certavail, ArrayList<String> _compatibleBoard) {
+	public Flasher(String _modulename, String _version, String _filename, boolean _certavail, int _baudrate, ArrayList<String> _compatibleBoard) {
 		modulename = _modulename;
 		compatibleBoard = new ArrayList<String>();
 		version = _version;
@@ -73,6 +74,7 @@ public class Flasher {
 		certavail = _certavail;
 		compatibleBoard.addAll(_compatibleBoard);
 		filename = _filename;
+		baudrate = _baudrate;
 	}
 
 	public void progress(int progress, String text) {
@@ -84,12 +86,12 @@ public class Flasher {
 		progressBar.setString(text);
 	}
 
-	public void testConnection(String port) throws Exception {
+	public void testConnection(String port, int baudrate) throws Exception {
 		FlasherSerialClient client = null;
 		try {
 			progress(50, "Testing programmer...");
 			client = new FlasherSerialClient();
-			client.open(port);
+			client.open(port, baudrate);
 			client.hello();
 			progress(100, "Done!");
 		} finally {
@@ -113,6 +115,10 @@ public class Flasher {
 
 	public String getName() {
 		return name;
+	}
+
+	public int getBaudrate() {
+		return baudrate;
 	}
 
 	public byte[] getData() throws IOException {

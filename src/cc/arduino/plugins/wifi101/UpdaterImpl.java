@@ -69,6 +69,8 @@ public class UpdaterImpl extends UpdaterJFrame {
 		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.5.2", "firmwares/WINC1500/19.5.2/m2m_aio_3a0.bin", true, 1000000, new ArrayList<String>(asList("Arduino/Genuino MKR1000"))));
 		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.4.4", "firmwares/WINC1500/19.4.4/m2m_aio_3a0.bin", true, 1000000, new ArrayList<String>(asList("Arduino/Genuino MKR1000"))));
 		fwAvailable.add(new WINCFlasher("WINC1501 Model A", "19.4.4", "firmwares/WINC1500/19.4.4/m2m_aio_2b0.bin", true, 115200, new ArrayList<String>(asList("Arduino WiFi 101 Shield"))));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.0", "firmwares/NINA/1.2.0/NINA_W102.bin", true, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010"))));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.0", "firmwares/NINA/1.2.0/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, new ArrayList<String>(asList("Arduino Uno WiFi Rev2"))));
 		fwAvailable.add(new NinaFlasher("NINA firmware", "1.1.0", "firmwares/NINA/1.1.0/NINA_W102.bin", true, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010", "Arduino MKR Vidor 4000", "Arduino Uno WiFi Rev2"))));
 		fwAvailable.add(new NinaFlasher("NINA firmware", "1.0.0", "firmwares/NINA/1.0.0/NINA_W102.bin", false, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010", "Arduino MKR Vidor 4000", "Arduino Uno WiFi Rev2"))));
 

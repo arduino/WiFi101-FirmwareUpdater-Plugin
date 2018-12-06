@@ -179,6 +179,17 @@ public class UpdaterImpl extends UpdaterJFrame {
 	}
 
 	@Override
+	protected void openFirmwareUpdaterSketch() {
+		Flasher fw = (Flasher) getFirmwareSelector().getSelectedItem();
+		try {
+			fw.openFirmwareUpdaterSketch(getSelectedPort());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
 	protected void updateFirmware() {
 		BoardPort port = getSelectedPort();
 		if (port == null) {

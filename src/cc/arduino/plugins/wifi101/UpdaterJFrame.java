@@ -51,6 +51,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import cc.arduino.plugins.wifi101.flashers.Flasher;
+import processing.app.Base;
 
 @SuppressWarnings("serial")
 public class UpdaterJFrame extends JFrame {
@@ -72,6 +73,7 @@ public class UpdaterJFrame extends JFrame {
 	private JButton addCertificateButton;
 	private JButton updateFirmwareButton;
 	private JButton testConnectionButton;
+	private JButton openFirmwareUpdaterSketchButton;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -130,13 +132,13 @@ public class UpdaterJFrame extends JFrame {
 
 		serialPortList = new JList<String>();
 		JScrollPane sp = new JScrollPane(serialPortList);
-		serialPortList.setMaximumSize(new Dimension(300, 50));
+		serialPortList.setMaximumSize(new Dimension(300, 100));
 		GridBagConstraints gbc_serialPortList = new GridBagConstraints();
 		gbc_serialPortList.insets = new Insets(5, 5, 5, 5);
 		gbc_serialPortList.fill = GridBagConstraints.BOTH;
 		gbc_serialPortList.gridx = 0;
 		gbc_serialPortList.gridy = 1;
-		gbc_serialPortList.gridheight = 2;
+		gbc_serialPortList.gridheight = 5;
 		panel_1.add(sp, gbc_serialPortList);
 		serialPortList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
@@ -153,9 +155,9 @@ public class UpdaterJFrame extends JFrame {
 		});
 		GridBagConstraints gbc_refreshListButton = new GridBagConstraints();
 		gbc_refreshListButton.fill = GridBagConstraints.HORIZONTAL;
-		gbc_refreshListButton.insets = new Insets(5, 5, 5, 5);
+		gbc_refreshListButton.insets = new Insets(0,0,0,0);
 		gbc_refreshListButton.gridx = 1;
-		gbc_refreshListButton.gridy = 1;
+		gbc_refreshListButton.gridy = 2;
 		panel_1.add(refreshListButton, gbc_refreshListButton);
 
 		testConnectionButton = new JButton("Test connection");
@@ -166,10 +168,23 @@ public class UpdaterJFrame extends JFrame {
 		});
 
 		GridBagConstraints gbc_testConnectionButton = new GridBagConstraints();
-		gbc_testConnectionButton.insets = new Insets(5, 5, 5, 5);
+		gbc_testConnectionButton.insets = new Insets(0,0,0,0);
 		gbc_testConnectionButton.gridx = 1;
-		gbc_testConnectionButton.gridy = 2;
+		gbc_testConnectionButton.gridy = 3;
 		panel_1.add(testConnectionButton, gbc_testConnectionButton);
+
+		openFirmwareUpdaterSketchButton = new JButton("Open Updater sketch");
+		openFirmwareUpdaterSketchButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				openFirmwareUpdaterSketch();
+			}
+		});
+
+		GridBagConstraints gbc_openFirmwareUpdaterSketchButton = new GridBagConstraints();
+		gbc_openFirmwareUpdaterSketchButton.insets = new Insets(0,0,0,0);
+		gbc_openFirmwareUpdaterSketchButton.gridx = 1;
+		gbc_openFirmwareUpdaterSketchButton.gridy = 1;
+		panel_1.add(openFirmwareUpdaterSketchButton, gbc_openFirmwareUpdaterSketchButton);
 
 		panel = new JPanel();
 		panel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "2. Update firmware", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
@@ -364,6 +379,10 @@ public class UpdaterJFrame extends JFrame {
 	}
 
 	protected void testConnection() {
+		// To be overridden
+	}
+
+	protected void openFirmwareUpdaterSketch() {
 		// To be overridden
 	}
 

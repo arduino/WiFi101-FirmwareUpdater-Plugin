@@ -31,9 +31,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
+import javax.swing.JMenuItem;
 import javax.swing.JProgressBar;
+import javax.swing.JRadioButtonMenuItem;
 
+import cc.arduino.packages.BoardPort;
 import cc.arduino.plugins.wifi101.flashers.java.FlasherSerialClient;
+import processing.app.Editor;
+import processing.app.debug.TargetBoard;
+import processing.app.packages.LibraryList;
+import processing.app.packages.UserLibrary;
+import processing.app.packages.UserLibraryFolder.Location;
+import processing.app.Base;
+import processing.app.BaseNoGui;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -101,6 +111,31 @@ public class Flasher {
 		}
 	}
 
+	public void openFirmwareUpdaterSketch(BoardPort port) throws Exception {
+		LibraryList allLibraries = BaseNoGui.librariesIndexer.getInstalledLibraries();
+		String firmwareUpdaterExamplePath = "";
+		String nameToSearchFor = "";
+		String pathToSketch = "";
+		if (modulename.contains("NINA")) {
+			nameToSearchFor = "WiFiNINA";
+			pathToSketch = "examples/Tools/FirmwareUpdater/FirmwareUpdater.ino";
+		}
+		if (modulename.contains("WINC")) {
+			nameToSearchFor = "WiFi101";
+			pathToSketch = "examples/FirmwareUpdater/FirmwareUpdater.ino";
+		}
+		for (UserLibrary lib : allLibraries) {
+		  if (lib.getName().equals(nameToSearchFor)) {
+			  firmwareUpdaterExamplePath = lib.getInstalledFolder().getAbsolutePath() + "/" + pathToSketch;
+		  }
+		}
+		if (firmwareUpdaterExamplePath != "" && port != null) {
+			BaseNoGui.selectSerialPort(port.getAddress());
+			Base.INSTANCE.onBoardOrPortChange();
+			Base.INSTANCE.handleOpen(new File(firmwareUpdaterExamplePath));
+		}
+	}
+
 	public void updateFirmware(String port) throws Exception {
 		// To be overridden
 	}
@@ -151,6 +186,9 @@ public class Flasher {
 	}
 
 	public boolean isCompatible(String boardName) {
+		if (boardName == null) {
+			return false;
+		}
 		for (String name : compatibleBoard) {
 			if (name.toLowerCase().equals(boardName.toLowerCase())) {
 				return true;

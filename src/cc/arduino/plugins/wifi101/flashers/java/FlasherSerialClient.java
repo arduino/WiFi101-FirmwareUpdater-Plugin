@@ -105,7 +105,7 @@ public class FlasherSerialClient {
 		sendCommand((byte) 0x99, 0x11223344, 0x55667788, null);
 		byte[] answer = waitAnswer(2000, 6, true);
 		if (answer.length != 6 || answer[0] != 'v') {
-			throw new Exception("Programmer not responding");
+			throw new Exception("Programmer not responding\nMake sure that FirmwareUpdater sketch was already uploaded.");
 		}
 		String version = new String(answer);
 		if (!version.equals("v10000"))

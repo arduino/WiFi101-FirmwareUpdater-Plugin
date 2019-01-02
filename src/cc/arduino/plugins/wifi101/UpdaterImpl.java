@@ -129,10 +129,9 @@ public class UpdaterImpl extends UpdaterJFrame {
 				}
 			}
 			if (added == 0) {
+				// Board not automatically recognized, give the chance to flash any firmware
 				for (Flasher firmware : fwAvailable) {
-					if (firmware.isCompatible("Arduino WiFi 101 Shield")) {
-						getFirmwareSelector().addItem(firmware);
-					}
+					getFirmwareSelector().addItem(firmware);
 				}
 			}
 			Flasher fw = (Flasher) getFirmwareSelector().getSelectedItem();

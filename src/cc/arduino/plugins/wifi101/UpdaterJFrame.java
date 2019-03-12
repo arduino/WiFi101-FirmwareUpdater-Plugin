@@ -52,6 +52,7 @@ import javax.swing.event.ListSelectionListener;
 
 import cc.arduino.plugins.wifi101.flashers.Flasher;
 import processing.app.Base;
+import processing.app.Theme;
 
 @SuppressWarnings("serial")
 public class UpdaterJFrame extends JFrame {
@@ -89,10 +90,12 @@ public class UpdaterJFrame extends JFrame {
 	}
 
 	public UpdaterJFrame() {
+
+		int scale = Theme.getScale();
 		setTitle("WiFi101 / WiFiNINA Firmware/Certificates Updater");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 500, 520);
+		setBounds(100 * scale / 100, 100 * scale / 100, 500 * scale / 100, 520 * scale / 100);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -105,8 +108,8 @@ public class UpdaterJFrame extends JFrame {
 
 		panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "1. Select port of the WiFi module", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setMinimumSize(new Dimension(500, 150));
-		panel_1.setPreferredSize(new Dimension(500, 150));
+		panel_1.setMinimumSize(new Dimension(500 * scale / 100, 150 * scale / 100));
+		panel_1.setPreferredSize(new Dimension(500 * scale / 100, 150 * scale / 100));
 		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
 		gbc_panel_1.insets = new Insets(5, 5, 0, 5);
 		gbc_panel_1.fill = GridBagConstraints.BOTH;
@@ -132,7 +135,7 @@ public class UpdaterJFrame extends JFrame {
 
 		serialPortList = new JList<String>();
 		JScrollPane sp = new JScrollPane(serialPortList);
-		serialPortList.setMaximumSize(new Dimension(300, 100));
+		serialPortList.setMaximumSize(new Dimension(300 * scale / 100, 100 * scale / 100));
 		GridBagConstraints gbc_serialPortList = new GridBagConstraints();
 		gbc_serialPortList.insets = new Insets(5, 5, 5, 5);
 		gbc_serialPortList.fill = GridBagConstraints.BOTH;
@@ -188,7 +191,7 @@ public class UpdaterJFrame extends JFrame {
 
 		panel = new JPanel();
 		panel.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "2. Update firmware", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-		panel.setMinimumSize(new Dimension(500, 150));
+		panel.setMinimumSize(new Dimension(500 * scale / 100, 150 * scale / 100));
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.insets = new Insets(5, 5, 0, 5);
 		gbc_panel.fill = GridBagConstraints.BOTH;
@@ -240,7 +243,7 @@ public class UpdaterJFrame extends JFrame {
 
 		panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "3. Update SSL root certificates", TitledBorder.LEFT, TitledBorder.TOP, null, null));
-		panel_2.setMinimumSize(new Dimension(500, 200));
+		panel_2.setMinimumSize(new Dimension(500 * scale / 100, 200 * scale / 100));
 		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
 		gbc_panel_2.insets = new Insets(5, 5, 0, 5);
 		gbc_panel_2.fill = GridBagConstraints.BOTH;
@@ -268,7 +271,7 @@ public class UpdaterJFrame extends JFrame {
 		textFwNot= new JLabel();
 		textFwNot.setText("No certificates available");
 		textFwNot.setOpaque(false);
-		textFwNot.setMinimumSize(new Dimension(500,500));
+		textFwNot.setMinimumSize(new Dimension(500 * scale / 100, 500 * scale / 100));
 		GridBagConstraints gbc_textFwNot = new GridBagConstraints();
 		gbc_textFwNot.gridwidth = 2;
 		gbc_textFwNot.insets = new Insets(5, 5, 5, 0);

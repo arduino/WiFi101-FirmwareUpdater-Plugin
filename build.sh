@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # This file is part of WiFi101 Updater Arduino-IDE Plugin.
 # Copyright 2016 Arduino LLC (http://www.arduino.cc/)
@@ -31,7 +31,7 @@ ZIP_FILENAME=WiFi101-Updater-ArduinoIDE-Plugin-$REV
 REQUIRED_JARS="pde.jar arduino-core.jar jssc-2.8.0-arduino3.jar bcpg-jdk15on-152.jar bcprov-jdk15on-152.jar commons-lang3-3.8.1.jar commons-codec-1.7.jar"
 
 # Check existence of the IDE folder
-if [[ -z "$IDE_FOLDER" ]]; then
+if [ -z "$IDE_FOLDER" ]; then
 	echo ""
 	echo "Please set variable IDE_FOLDER to the path of the installed Arduino IDE"
 	echo "For example:"
@@ -48,7 +48,7 @@ for JAR in $REQUIRED_JARS; do
 		darwin*)  JARFILE="$IDE_FOLDER/Java/$JAR" ;;
 		*)        JARFILE="$IDE_FOLDER/lib/$JAR" ;;
 	esac
-	if [[ -z "$JARFILE" ]]; then
+	if [ -z "$JARFILE" ]; then
 		echo "Could not find $JARFILE library in you IDE folder."
 		exit 1
 	fi

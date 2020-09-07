@@ -194,9 +194,13 @@ public class UpdaterImpl extends UpdaterJFrame {
 		Flasher fw = (Flasher) getFirmwareSelector().getSelectedItem();
 		try {
 			fw.openFirmwareUpdaterSketch(getSelectedPort());
-		}
-		catch (Exception e) {
-			e.printStackTrace();
+		} catch (NullPointerException e) {
+			JOptionPane.showMessageDialog(UpdaterImpl.this, "Please select a board from the connected ones.", "No board selected",
+				JOptionPane.INFORMATION_MESSAGE);
+
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(UpdaterImpl.this, e.getMessage(), "Missing library",
+				JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

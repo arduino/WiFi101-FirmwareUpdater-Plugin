@@ -11,7 +11,7 @@ addons:
     - ant
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 script:
   - export SRC=$PWD
@@ -23,4 +23,3 @@ script:
   - popd
   - export IDE_FOLDER=Arduino-$TAG/build/linux/work
   - ./build.sh
-

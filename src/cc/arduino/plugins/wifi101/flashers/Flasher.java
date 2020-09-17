@@ -129,6 +129,15 @@ public class Flasher {
 			  firmwareUpdaterExamplePath = lib.getInstalledFolder().getAbsolutePath() + "/" + pathToSketch;
 		  }
 		}
+		if (firmwareUpdaterExamplePath == "") {
+			String errorMessage = nameToSearchFor + "library";
+			if (port.getBoardName() != "") {
+				errorMessage += " for " + port.getBoardName();
+			}
+			errorMessage += " is not installed.\nUse the library manager to install it.";
+			throw new Exception(errorMessage);
+		}
+
 		if (firmwareUpdaterExamplePath != "" && port != null) {
 			BaseNoGui.selectSerialPort(port.getAddress());
 			Base.INSTANCE.onBoardOrPortChange();

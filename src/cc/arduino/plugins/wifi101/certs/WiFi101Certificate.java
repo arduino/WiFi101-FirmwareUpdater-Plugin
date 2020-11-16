@@ -38,8 +38,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import javax.xml.bind.DatatypeConverter;
-
+import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OutputStream;
@@ -103,7 +102,7 @@ public class WiFi101Certificate {
 		v1Data = v1Res.toByteArray();
 
 		byte[] digest = MessageDigest.getInstance("SHA-1").digest(v0Data);
-		hash = DatatypeConverter.printHexBinary(digest).substring(0, 6);
+		hash = Hex.encodeHexString(digest).substring(0, 6);
 	}
 
 	@Override

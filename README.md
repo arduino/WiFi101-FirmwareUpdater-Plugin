@@ -27,6 +27,15 @@ Arduino/Genuino MKR1000 board). This plugin is bundled with the IDE starting fro
 
 Please open an issue [on github](https://github.com/arduino-libraries/WiFi101-FirmwareUpdater-Plugin/issues/new).
 
+### Security
+
+If you think you found a vulnerability or other security-related bug in this project, please read our
+[security policy](https://github.com/arduino/WiFi101-FirmwareUpdater-Plugin/security/policy) and report the bug to our
+Security Team 🛡️
+Thank you!
+
+e-mail contact: security@arduino.cc
+
 ## Credits and license
 
 ```

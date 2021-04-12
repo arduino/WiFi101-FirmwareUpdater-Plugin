@@ -39,7 +39,7 @@ import java.nio.ByteOrder;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import processing.app.SerialException;
-import processing.app.SerialNotFoundException;;
+import processing.app.SerialNotFoundException;
 
 public class FlasherSerialClient {
 
@@ -193,7 +193,7 @@ public class FlasherSerialClient {
 		synchronized (recvBuffer) {
 			if (recvPos == writePos)
 				return -1;
-			return ((int) recvBuffer[recvPos++]) & 0xFF;
+			return recvBuffer[recvPos++] & 0xFF;
 		}
 	}
 

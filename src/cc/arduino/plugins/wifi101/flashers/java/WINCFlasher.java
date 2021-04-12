@@ -31,24 +31,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import java.util.*;
-import java.io.ByteArrayOutputStream;
-import java.io.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import org.apache.commons.lang3.StringUtils;
+import java.util.Arrays;
+import java.util.List;
 
 import cc.arduino.plugins.wifi101.certs.WiFi101Certificate;
 import cc.arduino.plugins.wifi101.certs.WiFi101CertificateBundle;
 import cc.arduino.plugins.wifi101.flashers.Flasher;
-import javax.swing.JProgressBar;
 
 public class WINCFlasher extends Flasher {
 
-	public WINCFlasher(String _modulename, String _version, String _filename, boolean _certavail, int _baudrate, ArrayList<String> _compatibleBoard) {
+	public WINCFlasher(String _modulename, String _version, String _filename, boolean _certavail, int _baudrate, List<String> _compatibleBoard) {
 		super(_modulename, _version, _filename, _certavail, _baudrate, _compatibleBoard);
 	}
 

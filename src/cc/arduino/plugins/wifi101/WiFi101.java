@@ -35,14 +35,17 @@ public class WiFi101 implements Tool {
 
 	UpdaterImpl updater;
 
-	public void init(Editor editor) {
-		this.editor = editor;
+	@Override
+	public void init(Editor _editor) {
+		this.editor = _editor;
 	}
 
+	@Override
 	public String getMenuTitle() {
 		return "WiFi101 / WiFiNINA Firmware Updater";
 	}
 
+	@Override
 	public synchronized void run() {
 		if (updater == null)
 			try {

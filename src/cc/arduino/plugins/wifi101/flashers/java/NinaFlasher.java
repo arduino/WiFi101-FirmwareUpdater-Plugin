@@ -27,38 +27,24 @@
  */
 package cc.arduino.plugins.wifi101.flashers.java;
 
+import java.io.ByteArrayOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
-import java.util.*;
 import java.util.List;
-import java.io.ByteArrayOutputStream;
-import java.io.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import org.apache.commons.lang3.StringUtils;
-import java.security.MessageDigest;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
-import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
 
-import cc.arduino.plugins.wifi101.certs.WiFi101Certificate;
-import cc.arduino.plugins.wifi101.certs.WiFi101CertificateBundle;
+import org.apache.commons.codec.binary.Base64;
 
 import cc.arduino.plugins.wifi101.flashers.Flasher;
-import javax.swing.JProgressBar;
 
 public class NinaFlasher extends Flasher {
 
 	public byte[] md5Checksum;
 
-	public NinaFlasher(String _modulename, String _version, String _filename, boolean _certavail, int _baudrate, ArrayList<String> _compatibleBoard) {
+	public NinaFlasher(String _modulename, String _version, String _filename, boolean _certavail, int _baudrate, List<String> _compatibleBoard) {
 		super(_modulename, _version, _filename, _certavail, _baudrate, _compatibleBoard);
 	}
 

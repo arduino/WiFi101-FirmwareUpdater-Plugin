@@ -153,12 +153,12 @@ public class WiFi101Certificate {
 
 	private static byte[] getSubjectValueHash(X509Certificate x509) throws NoSuchAlgorithmException, IOException {
 		MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
-		ASN1InputStream ais = new ASN1InputStream(x509.getSubjectX500Principal().getEncoded());
-		while (ais.available() > 0) {
-			ASN1Primitive obj = ais.readObject();
-			sha1.update(extractPrintableString(obj));
+		try (ASN1InputStream ais = new ASN1InputStream(x509.getSubjectX500Principal().getEncoded())) {
+			while (ais.available() > 0) {
+				ASN1Primitive obj = ais.readObject();
+				sha1.update(extractPrintableString(obj));
+			}
 		}
-		ais.close();
 		return sha1.digest();
 	}
 

@@ -27,39 +27,25 @@
  */
 package cc.arduino.plugins.wifi101.flashers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-
-import javax.swing.JMenuItem;
-import javax.swing.JProgressBar;
-import javax.swing.JRadioButtonMenuItem;
-
-import cc.arduino.packages.BoardPort;
-import cc.arduino.plugins.wifi101.flashers.java.FlasherSerialClient;
-import processing.app.Editor;
-import processing.app.debug.TargetBoard;
-import processing.app.packages.LibraryList;
-import processing.app.packages.UserLibrary;
-import processing.app.packages.UserLibraryFolder.Location;
-import processing.app.Base;
-import processing.app.BaseNoGui;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.util.*;
-
 import java.io.ByteArrayOutputStream;
-import java.io.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import org.apache.commons.lang3.StringUtils;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JProgressBar;
+
+import org.apache.commons.lang3.StringUtils;
+
+import cc.arduino.packages.BoardPort;
+import cc.arduino.plugins.wifi101.flashers.java.FlasherSerialClient;
+import processing.app.Base;
+import processing.app.BaseNoGui;
+import processing.app.packages.LibraryList;
+import processing.app.packages.UserLibrary;
 
 public class Flasher {
 
@@ -69,20 +55,19 @@ public class Flasher {
 	public JProgressBar progressBar;
 	public String name;
 	public String filename;
-	public List<String> compatibleBoard;
+	public List<String> compatibleBoards;
 	public boolean certavail;
 	protected int baudrate;
 
 	public Flasher() {}
 
-	public Flasher(String _modulename, String _version, String _filename, boolean _certavail, int _baudrate, ArrayList<String> _compatibleBoard) {
+	public Flasher(String _modulename, String _version, String _filename, boolean _certavail, int _baudrate, List<String> _compatibleBoards) {
 		modulename = _modulename;
-		compatibleBoard = new ArrayList<String>();
+		compatibleBoards = new ArrayList<>(_compatibleBoards);
 		version = _version;
 		file = null;
 		name = "NINA";
 		certavail = _certavail;
-		compatibleBoard.addAll(_compatibleBoard);
 		filename = _filename;
 		baudrate = _baudrate;
 	}
@@ -96,12 +81,12 @@ public class Flasher {
 		progressBar.setString(text);
 	}
 
-	public void testConnection(String port, int baudrate) throws Exception {
+	public void testConnection(String port, int baud) throws Exception {
 		FlasherSerialClient client = null;
 		try {
 			progress(50, "Testing programmer...");
 			client = new FlasherSerialClient();
-			client.open(port, baudrate);
+			client.open(port, baud);
 			client.hello();
 			progress(100, "Done!");
 		} finally {
@@ -198,8 +183,8 @@ public class Flasher {
 		if (boardName == null) {
 			return false;
 		}
-		for (String name : compatibleBoard) {
-			if (name.toLowerCase().equals(boardName.toLowerCase())) {
+		for (String compatibleBoard : compatibleBoards) {
+			if (compatibleBoard.equalsIgnoreCase(boardName)) {
 				return true;
 			}
 		}
@@ -222,9 +207,10 @@ public class Flasher {
 		}
 	}
 
+	@Override
 	public String toString() {
 		String names = modulename + " (" + version + ") (";
-		for (String lname : compatibleBoard) {
+		for (String lname : compatibleBoards) {
 			names = names.concat(lname).concat(", ");
 		}
 		names = names.substring(0, (names.length() - 2)).concat(")");

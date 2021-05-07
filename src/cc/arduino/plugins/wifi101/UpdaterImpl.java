@@ -27,25 +27,18 @@
  */
 package cc.arduino.plugins.wifi101;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import static java.util.Arrays.asList;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
 import cc.arduino.packages.BoardPort;
 import cc.arduino.plugins.wifi101.flashers.Flasher;
-import cc.arduino.plugins.wifi101.flashers.java.WINCFlasher;
 import cc.arduino.plugins.wifi101.flashers.java.NinaFlasher;
+import cc.arduino.plugins.wifi101.flashers.java.WINCFlasher;
 import processing.app.Base;
 
 @SuppressWarnings("serial")
@@ -55,7 +48,7 @@ public class UpdaterImpl extends UpdaterJFrame {
 
 	public ArrayList<String> compatibleBoard;
 
-	public static ArrayList<Flasher> fwAvailable = new ArrayList<Flasher>();
+	public static ArrayList<Flasher> fwAvailable = new ArrayList<>();
 
 	public UpdaterImpl() throws Exception {
 		super();
@@ -64,33 +57,36 @@ public class UpdaterImpl extends UpdaterJFrame {
 		});
 		Base.setIcon(this);
 
-		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.6.1", "firmwares/WINC1500/19.6.1/m2m_aio_3a0.bin", true, 1000000, new ArrayList<String>(asList("Arduino/Genuino MKR1000"))));
-		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.5.4", "firmwares/WINC1500/19.5.4/m2m_aio_3a0.bin", true, 1000000, new ArrayList<String>(asList("Arduino/Genuino MKR1000"))));
-		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.5.2", "firmwares/WINC1500/19.5.2/m2m_aio_3a0.bin", true, 1000000, new ArrayList<String>(asList("Arduino/Genuino MKR1000"))));
-		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.4.4", "firmwares/WINC1500/19.4.4/m2m_aio_3a0.bin", true, 1000000, new ArrayList<String>(asList("Arduino/Genuino MKR1000"))));
-		fwAvailable.add(new WINCFlasher("WINC1501 Model A", "19.4.4", "firmwares/WINC1500/19.4.4/m2m_aio_2b0.bin", true, 115200, new ArrayList<String>(asList("Arduino WiFi 101 Shield"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.4", "firmwares/NINA/1.4.4/NINA_W102.bin", true, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.4", "firmwares/NINA/1.4.4/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, new ArrayList<String>(asList("Arduino Uno WiFi Rev2"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.3", "firmwares/NINA/1.4.3/NINA_W102.bin", true, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.3", "firmwares/NINA/1.4.3/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, new ArrayList<String>(asList("Arduino Uno WiFi Rev2"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.2", "firmwares/NINA/1.4.2/NINA_W102.bin", true, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.2", "firmwares/NINA/1.4.2/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, new ArrayList<String>(asList("Arduino Uno WiFi Rev2"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.1", "firmwares/NINA/1.4.1/NINA_W102.bin", true, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.1", "firmwares/NINA/1.4.1/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, new ArrayList<String>(asList("Arduino Uno WiFi Rev2"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.0", "firmwares/NINA/1.4.0/NINA_W102.bin", true, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.0", "firmwares/NINA/1.4.0/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, new ArrayList<String>(asList("Arduino Uno WiFi Rev2"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.3.0", "firmwares/NINA/1.3.0/NINA_W102.bin", true, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.3.0", "firmwares/NINA/1.3.0/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, new ArrayList<String>(asList("Arduino Uno WiFi Rev2"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.4", "firmwares/NINA/1.2.4/NINA_W102.bin", true, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.4", "firmwares/NINA/1.2.4/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, new ArrayList<String>(asList("Arduino Uno WiFi Rev2"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.3", "firmwares/NINA/1.2.3/NINA_W102.bin", true, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.3", "firmwares/NINA/1.2.3/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, new ArrayList<String>(asList("Arduino Uno WiFi Rev2"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.2", "firmwares/NINA/1.2.2/NINA_W102.bin", true, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.2", "firmwares/NINA/1.2.2/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, new ArrayList<String>(asList("Arduino Uno WiFi Rev2"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.1", "firmwares/NINA/1.2.1/NINA_W102.bin", true, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.1", "firmwares/NINA/1.2.1/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, new ArrayList<String>(asList("Arduino Uno WiFi Rev2"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.1.0", "firmwares/NINA/1.1.0/NINA_W102.bin", true, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010", "Arduino MKR Vidor 4000", "Arduino Uno WiFi Rev2"))));
-		fwAvailable.add(new NinaFlasher("NINA firmware", "1.0.0", "firmwares/NINA/1.0.0/NINA_W102.bin", false, 1000000, new ArrayList<String>(asList("Arduino MKR WiFi 1010", "Arduino MKR Vidor 4000", "Arduino Uno WiFi Rev2"))));
+		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.6.1", "firmwares/WINC1500/19.6.1/m2m_aio_3a0.bin", true, 1000000, asList("Arduino/Genuino MKR1000")));
+		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.5.4", "firmwares/WINC1500/19.5.4/m2m_aio_3a0.bin", true, 1000000, asList("Arduino/Genuino MKR1000")));
+		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.5.2", "firmwares/WINC1500/19.5.2/m2m_aio_3a0.bin", true, 1000000, asList("Arduino/Genuino MKR1000")));
+		fwAvailable.add(new WINCFlasher("WINC1501 Model B", "19.4.4", "firmwares/WINC1500/19.4.4/m2m_aio_3a0.bin", true, 1000000, asList("Arduino/Genuino MKR1000")));
+		fwAvailable.add(new WINCFlasher("WINC1501 Model A", "19.4.4", "firmwares/WINC1500/19.4.4/m2m_aio_2b0.bin", true, 115200, asList("Arduino WiFi 101 Shield")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.5", "firmwares/NINA/1.4.5/NINA_W102.bin", true, 1000000, asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.5", "firmwares/NINA/1.4.5/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, asList("Arduino Uno WiFi Rev2")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.5", "firmwares/NINA/1.4.5/NINA_W102-Nano_RP2040_Connect.bin", true, 1000000, asList("Arduino Nano RP2040 Connect")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.4", "firmwares/NINA/1.4.4/NINA_W102.bin", true, 1000000, asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.4", "firmwares/NINA/1.4.4/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, asList("Arduino Uno WiFi Rev2")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.3", "firmwares/NINA/1.4.3/NINA_W102.bin", true, 1000000, asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.3", "firmwares/NINA/1.4.3/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, asList("Arduino Uno WiFi Rev2")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.2", "firmwares/NINA/1.4.2/NINA_W102.bin", true, 1000000, asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.2", "firmwares/NINA/1.4.2/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, asList("Arduino Uno WiFi Rev2")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.1", "firmwares/NINA/1.4.1/NINA_W102.bin", true, 1000000, asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.1", "firmwares/NINA/1.4.1/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, asList("Arduino Uno WiFi Rev2")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.0", "firmwares/NINA/1.4.0/NINA_W102.bin", true, 1000000, asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.4.0", "firmwares/NINA/1.4.0/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, asList("Arduino Uno WiFi Rev2")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.3.0", "firmwares/NINA/1.3.0/NINA_W102.bin", true, 1000000, asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.3.0", "firmwares/NINA/1.3.0/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, asList("Arduino Uno WiFi Rev2")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.4", "firmwares/NINA/1.2.4/NINA_W102.bin", true, 1000000, asList("Arduino MKR WiFi 1010", "Arduino NANO 33 IoT")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.4", "firmwares/NINA/1.2.4/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, asList("Arduino Uno WiFi Rev2")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.3", "firmwares/NINA/1.2.3/NINA_W102.bin", true, 1000000, asList("Arduino MKR WiFi 1010")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.3", "firmwares/NINA/1.2.3/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, asList("Arduino Uno WiFi Rev2")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.2", "firmwares/NINA/1.2.2/NINA_W102.bin", true, 1000000, asList("Arduino MKR WiFi 1010")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.2", "firmwares/NINA/1.2.2/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, asList("Arduino Uno WiFi Rev2")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.1", "firmwares/NINA/1.2.1/NINA_W102.bin", true, 1000000, asList("Arduino MKR WiFi 1010")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.2.1", "firmwares/NINA/1.2.1/NINA_W102-Uno_WiFi_Rev2.bin", true, 1000000, asList("Arduino Uno WiFi Rev2")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.1.0", "firmwares/NINA/1.1.0/NINA_W102.bin", true, 1000000, asList("Arduino MKR WiFi 1010", "Arduino MKR Vidor 4000", "Arduino Uno WiFi Rev2")));
+		fwAvailable.add(new NinaFlasher("NINA firmware", "1.0.0", "firmwares/NINA/1.0.0/NINA_W102.bin", false, 1000000, asList("Arduino MKR WiFi 1010", "Arduino MKR Vidor 4000", "Arduino Uno WiFi Rev2")));
 
 		for (Flasher firmware : fwAvailable) {
 			getFirmwareSelector().addItem(firmware);
@@ -110,7 +106,7 @@ public class UpdaterImpl extends UpdaterJFrame {
 
 	@Override
 	protected void refreshSerialPortList() {
-		DefaultListModel<String> model = new DefaultListModel<String>();
+		DefaultListModel<String> model = new DefaultListModel<>();
 		BoardPort board;
 		listModel = new SerialPortListModel();
 		for (int i = 0; i < listModel.getSize(); i++) {
@@ -179,6 +175,7 @@ public class UpdaterImpl extends UpdaterJFrame {
 
 		setEnabled(false);
 		new Thread() {
+			@Override
 			public void run() {
 				try {
 					fw.testConnection(port.getAddress(), fw.getBaudrate());
@@ -191,7 +188,7 @@ public class UpdaterImpl extends UpdaterJFrame {
 				}
 				setEnabled(true);
 				resetProgress();
-			};
+			}
 		}.start();
 	}
 
@@ -240,7 +237,7 @@ public class UpdaterImpl extends UpdaterJFrame {
 
 	@Override
 	protected void addCertificate() {
-		String website = (String) JOptionPane.showInputDialog(this, "Enter the website to fetch SSL certificate:",
+		String website = JOptionPane.showInputDialog(this, "Enter the website to fetch SSL certificate:",
 		    "Add SSL certificate from website", JOptionPane.QUESTION_MESSAGE);
 		if (website.startsWith("http://")) {
 			JOptionPane.showMessageDialog(UpdaterImpl.this, "Sorry \"http://\" protocol doesn't support SSL",
@@ -288,6 +285,7 @@ public class UpdaterImpl extends UpdaterJFrame {
 
 		setEnabled(false);
 		new Thread() {
+			@SuppressWarnings("synthetic-access")
 			@Override
 			public void run() {
 				try {

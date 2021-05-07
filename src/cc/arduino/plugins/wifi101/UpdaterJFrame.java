@@ -44,6 +44,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -51,7 +52,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import cc.arduino.plugins.wifi101.flashers.Flasher;
-import processing.app.Base;
 import processing.app.Theme;
 
 @SuppressWarnings("serial")
@@ -78,6 +78,7 @@ public class UpdaterJFrame extends JFrame {
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					UpdaterJFrame frame = new UpdaterJFrame();
@@ -94,7 +95,7 @@ public class UpdaterJFrame extends JFrame {
 		int scale = Theme.getScale();
 		setTitle("WiFi101 / WiFiNINA Firmware/Certificates Updater");
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setBounds(100 * scale / 100, 100 * scale / 100, 500 * scale / 100, 520 * scale / 100);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -133,7 +134,7 @@ public class UpdaterJFrame extends JFrame {
 		gbc_textSelectPort.gridy = 0;
 		panel_1.add(textSelectPort, gbc_textSelectPort);
 
-		serialPortList = new JList<String>();
+		serialPortList = new JList<>();
 		JScrollPane sp = new JScrollPane(serialPortList);
 		serialPortList.setMaximumSize(new Dimension(300 * scale / 100, 100 * scale / 100));
 		GridBagConstraints gbc_serialPortList = new GridBagConstraints();
@@ -144,14 +145,15 @@ public class UpdaterJFrame extends JFrame {
 		gbc_serialPortList.gridheight = 5;
 		panel_1.add(sp, gbc_serialPortList);
 		serialPortList.addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				boolean enabled = (serialPortList.getSelectedIndex() != -1);
 				SelectBoardModule();
 			}
 		});
 
 		JButton refreshListButton = new JButton("Refresh list");
 		refreshListButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				refreshSerialPortList();
 			}
@@ -165,6 +167,7 @@ public class UpdaterJFrame extends JFrame {
 
 		testConnectionButton = new JButton("Test connection");
 		testConnectionButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				testConnection();
 			}
@@ -178,6 +181,7 @@ public class UpdaterJFrame extends JFrame {
 
 		openFirmwareUpdaterSketchButton = new JButton("Open Updater sketch");
 		openFirmwareUpdaterSketchButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				openFirmwareUpdaterSketch();
 			}
@@ -215,7 +219,7 @@ public class UpdaterJFrame extends JFrame {
 		gbc_textSelectTheFirmware.gridy = 1;
 		panel.add(textSelectTheFirmware, gbc_textSelectTheFirmware);
 
-		firmwareSelector = new JComboBox<Flasher>();
+		firmwareSelector = new JComboBox<>();
 		GridBagConstraints gbc_firmwareSelector = new GridBagConstraints();
 		gbc_firmwareSelector.insets = new Insets(5, 5, 5, 0);
 		gbc_firmwareSelector.fill = GridBagConstraints.HORIZONTAL;
@@ -224,6 +228,7 @@ public class UpdaterJFrame extends JFrame {
 		panel.add(firmwareSelector, gbc_firmwareSelector);
 
 		firmwareSelector.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateCertSection();
 			}
@@ -231,6 +236,7 @@ public class UpdaterJFrame extends JFrame {
 
 		updateFirmwareButton = new JButton("Update Firmware");
 		updateFirmwareButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateFirmware();
 			}
@@ -283,8 +289,9 @@ public class UpdaterJFrame extends JFrame {
 
 		certSelector = new JList<>();
 		certSelector.addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				boolean enabled = (certSelector.getSelectedIndex() != -1);
+				boolean enabled = (getCertSelector().getSelectedIndex() != -1);
 				getRemoveCertificateButton().setEnabled(enabled);
 			}
 		});
@@ -299,6 +306,7 @@ public class UpdaterJFrame extends JFrame {
 
 		addCertificateButton = new JButton("Add domain");
 		addCertificateButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				addCertificate();
 			}
@@ -313,6 +321,7 @@ public class UpdaterJFrame extends JFrame {
 		removeCertificateButton = new JButton("Remove domain");
 		removeCertificateButton.setEnabled(false);
 		removeCertificateButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				removeCertificate();
 			}
@@ -326,6 +335,7 @@ public class UpdaterJFrame extends JFrame {
 
 		uploadCertificatesButton = new JButton("Upload Certificates to WiFi module");
 		uploadCertificatesButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				uploadCertificates();
 			}
